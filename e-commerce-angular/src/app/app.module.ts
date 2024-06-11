@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FeaturesModule } from './features/features.module';
-import { PrimeNgModule } from './shared/prime-ng.module';
+import { SharedModule } from './shared/shared.module';
 
 
 
@@ -19,7 +19,7 @@ import { PrimeNgModule } from './shared/prime-ng.module';
     AppRoutingModule,
     FeaturesModule,
     HttpClientModule,
-    PrimeNgModule
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
