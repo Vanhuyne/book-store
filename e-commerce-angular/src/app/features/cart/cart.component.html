@@ -1,0 +1,10 @@
+<!-- cart.component.html -->
+<div *ngIf="cart">
+    <h2>Shopping Cart</h2>
+    <div *ngFor="let item of cart.cartItems">
+      <p>{{ item.productName }} - {{ item.quantity }} x ${{ item.productPrice }}</p>
+    </div>
+  </div>
+  <div *ngIf="!cart">
+    <p>Loading...</p>
+  </div>

@@ -2,6 +2,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { FeaturesRoutingModule } from './features-routing.module';
+import { FormsModule } from '@angular/forms';
+import { ProductListComponent } from './product-list/product-list.component';
+import { ProductComponent } from './product/product.component';
+import { CartComponent } from './cart/cart.component';
 
 // Auth components
 // import { LoginComponent } from './auth/login/login.component';
@@ -23,29 +30,25 @@ import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     // Auth components
-    // LoginComponent,
-    // RegisterComponent,
     
     // Books components
     // BookListComponent,
     // BookDetailComponent,
-    
     // Other feature components
-    // CartComponent,
     // OrdersComponent,
     // ProfileComponent,
+  
+    LoginComponent,
+    RegisterComponent,
+    ProductListComponent,
+    ProductComponent,
+    CartComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([
-    //   { path: 'login', component: LoginComponent },
-    //   { path: 'register', component: RegisterComponent },
-    //   { path: 'books', component: BookListComponent },
-    //   { path: 'books/:id', component: BookDetailComponent },
-    //   { path: 'cart', component: CartComponent },
-    //   { path: 'orders', component: OrdersComponent },
-    //   { path: 'profile', component: ProfileComponent },
-    ]),
+    FeaturesRoutingModule,
+    FormsModule,
+
   ],
 })
 export class FeaturesModule {}

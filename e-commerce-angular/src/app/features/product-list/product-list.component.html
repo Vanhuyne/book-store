@@ -1,0 +1,9 @@
+<!-- src/app/product-list/product-list.component.html -->
+<div class="container mx-auto w-4/5">
+  <div *ngIf="products.length" class="grid grid-cols-4 gap-4">
+    <app-product *ngFor="let product of products" [product]="product" (addToCartClicked)="addToCart($event)"></app-product>
+  </div>
+  <div *ngIf="!products.length" class="text-center text-gray-600">
+    No products available.
+  </div>
+</div>

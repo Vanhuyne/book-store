@@ -14,7 +14,6 @@ import { FooterComponent } from './footer/footer.component';
   exports: [
     NavbarComponent,
     FooterComponent
-  
   ],
   declarations: [
     NavbarComponent,

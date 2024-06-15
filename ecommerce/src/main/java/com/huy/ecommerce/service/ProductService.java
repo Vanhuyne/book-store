@@ -14,10 +14,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -48,7 +54,7 @@ public class ProductService {
         productDTO.setCreatedAt(product.getCreatedAt());
         productDTO.setUpdatedAt(product.getUpdatedAt());
         productDTO.setPhotoUrls(product.getPhotos().stream()
-                .map(this::convertToPhotoDTO).collect(Collectors.toList()));
+                .map(this::convertToPhotoDTO).toList());
         return productDTO;
     }
 
@@ -71,7 +77,7 @@ public class ProductService {
                     photo.setUrl(photoDTO.getUrl());
                     photo.setProduct(product);
                     return photo;
-                }).collect(Collectors.toList()));
+                }).toList());
         return product;
     }
 
@@ -82,12 +88,45 @@ public class ProductService {
     }
 
     // create product
-    public ProductDTO createProduct(ProductDTO productDTO) {
-        Product product = convertToEntity(productDTO);
-        product.setCreatedAt(LocalDateTime.now());
-        product.getPhotos().forEach(photo -> photoRepository.save(photo));
-        productRepository.save(product);
-        return convertToDTO(product);
+    public void createProduct(ProductDTO productDTO , MultipartFile file) throws IOException{
+        try {
+            // Handle file
+            String uploadDir = "./uploads/";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            // Generate random file name
+            String originalFilename = file.getOriginalFilename();
+
+            if (originalFilename == null) {
+                throw new IllegalArgumentException("Original filename cannot be null");
+            }
+            String originalFileName = StringUtils.cleanPath(originalFilename);
+
+            String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String randomFileName = UUID.randomUUID().toString() + extension;
+            Path filePath = uploadPath.resolve(randomFileName);
+            Files.copy(file.getInputStream(), filePath);
+
+            // Set the thumbnailUrl in the productDTO (relative path)
+            productDTO.setThumbnailUrl(randomFileName);
+
+            // Create Product entity and save to database
+            Product product = new Product();
+            product.setName(productDTO.getName());
+            product.setDescription(productDTO.getDescription());
+            product.setPrice(productDTO.getPrice());
+            product.setStockQuantity(productDTO.getStockQuantity());
+            product.setThumbnailUrl(productDTO.getThumbnailUrl()); // Set the saved file path
+            product.setCategory(categoryRepository.findById(productDTO.getCategoryId()).orElse(null));
+            product.setCreatedAt(LocalDateTime.now());
+            product.setUpdatedAt(LocalDateTime.now());
+
+            productRepository.save(product);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("Failed to upload file: " + e.getMessage());
+        }
     }
 
     // update product
