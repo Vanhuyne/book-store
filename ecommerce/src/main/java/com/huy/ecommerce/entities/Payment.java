@@ -2,13 +2,12 @@ package com.huy.ecommerce.entities;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "payments")
@@ -22,21 +21,13 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @OneToOne(mappedBy = "payment")
     private Order order;
+    private String payerId;    // PayerId of paypal (e.g., "PayPal")
+    private String paymentStatus;    // Payment method (e.g., "PayPal")
 
-    @NotBlank
-    private String paymentMethod;
-
-    @NotBlank
-    private String paymentStatus;
-    private String transactionId;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date paymentTime;
 
 }
 

@@ -1,5 +1,5 @@
 <!-- src/app/product/product.component.html -->
-<div *ngIf="product" class="bg-white rounded-lg shadow-lg p-2 overflow-hidden m-4">
+<div *ngIf="product" class="bg-white rounded-lg shadow-lg p-1 overflow-hidden m-2">
     <!-- <img *ngIf="product.thumbnailUrl" [src]="product.thumbnailUrl" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-t-lg"> -->
     <img  [src]="apiThumnailUrl + product.thumbnailUrl" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-t-lg">
     <div class="p-2">
@@ -7,7 +7,7 @@
       <p class="text-gray-600">{{ product.description }}</p>
       <p class="text-gray-800 font-bold mt-2">{{ product.price | currency }}</p>
       <p class="text-gray-500">Stock: {{ product.stockQuantity }}</p>
-      <button  (click)="addToCart()"  class="mt-2 p-2 py-2 w-full bg-blue-500 text-white font-semibold rounded-full shadow-md hover:bg-blue-700 focus:outline-none focus:ring  focus:ring-opacity-75">
+      <button  (click)="addToCart()"  class="my-2 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Add to cart
       </button>
     </div>

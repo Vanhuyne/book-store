@@ -7,6 +7,7 @@ import com.huy.ecommerce.entities.CartItem;
 import com.huy.ecommerce.entities.Product;
 import com.huy.ecommerce.entities.User;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
+import com.huy.ecommerce.exception.UnauthorizedOperationException;
 import com.huy.ecommerce.repository.CartItemRepository;
 import com.huy.ecommerce.repository.CartRepository;
 import com.huy.ecommerce.repository.ProductRepository;
@@ -101,12 +102,32 @@ public class CartService {
     }
 
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
-        CartItemDTO cartItemDTO = new CartItemDTO();
-        cartItemDTO.setCartItemId(cartItem.getCartItemId());
-        cartItemDTO.setProductId(cartItem.getProduct().getProductId());
-        cartItemDTO.setProductName(cartItem.getProduct().getName());
-        cartItemDTO.setProductPrice(cartItem.getProduct().getPrice());
-        cartItemDTO.setQuantity(cartItem.getQuantity());
-        return cartItemDTO;
+        Product product = cartItem.getProduct();
+        return new CartItemDTO(
+                cartItem.getCartItemId(),
+                product.getProductId(),
+                product.getName(),
+                product.getPrice(),
+                cartItem.getQuantity(),
+                product.getThumbnailUrl()
+        );
     }
+
+    public void removeCartItem (Long userId ,Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
+
+        if (!cartItem.getCart().getUser().getUserId().equals(userId)) {
+            throw new UnauthorizedOperationException("You are not authorized to remove this item from the cart." + userId);
+        }
+        Product product = cartItem.getProduct();
+        product.setStockQuantity(product.getStockQuantity() + cartItem.getQuantity());
+        productRepository.save(product);
+
+        Cart cart = cartItem.getCart();
+        cart.getCartItems().remove(cartItem);
+        cartItem.setCart(null);
+        cartItemRepository.delete(cartItem);
+    }
+
 }

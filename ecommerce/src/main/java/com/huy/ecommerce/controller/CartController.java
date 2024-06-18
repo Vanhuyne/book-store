@@ -25,5 +25,14 @@ public class CartController {
                                                     @RequestParam int quantity) {
         CartDTO cart = cartService.addProductToCart(userId, productId, quantity);
             return ResponseEntity.ok(cart);
-        }
+    }
+
+    // Remove product from cart
+    @DeleteMapping("/remove/{userId}/{cartItemId}")
+    public ResponseEntity<Void> removeCartItem(@PathVariable Long userId, @PathVariable Long cartItemId) {
+        cartService.removeCartItem(userId ,cartItemId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

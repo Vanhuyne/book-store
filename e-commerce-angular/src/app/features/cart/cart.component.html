@@ -1,10 +1,50 @@
 <!-- cart.component.html -->
-<div *ngIf="cart">
-    <h2>Shopping Cart</h2>
-    <div *ngFor="let item of cart.cartItems">
-      <p>{{ item.productName }} - {{ item.quantity }} x ${{ item.productPrice }}</p>
+<div *ngIf="cart" class="p-4 mt-3 max-w-7xl mx-auto bg-white rounded-xl shadow-md space-y-4 container">
+  <h2 class="text-2xl font-bold text-gray-900">Shopping Cart</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Cart Items Section -->
+    <div class="lg:col-span-2 bg-gray-100 p-4 rounded-lg shadow-inner">
+      <div *ngFor="let item of cart.cartItems" class="flex items-center border-b py-2 space-x-4">
+        <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}" class="w-16 h-16 object-cover rounded">
+        <div class="flex-1">
+          <p class="text-lg text-gray-700">{{ item.productName }}</p>
+          <p class="text-lg text-gray-500">{{ item.quantity }} x ${{ item.productPrice }}</p>
+        </div>
+        <button (click)="removeCartItem(userId, item.cartItemId)" class="text-red-600 hover:text-red-800 font-bold">
+          <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Order Summary Section -->
+    <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h3>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <p class="text-lg text-gray-700">Subtotal</p>
+          <p class="text-lg text-gray-700">${{ getTotal(cart.cartItems) }}</p>
+        </div>
+        <div class="flex justify-between">
+          <p class="text-lg text-gray-700">Tax</p>
+          <p class="text-lg text-gray-700">${{ getTax(cart.cartItems) }}</p>
+        </div>
+        <div class="flex justify-between font-bold">
+          <p class="text-lg text-gray-800">Total</p>
+          <p class="text-lg text-gray-800">${{ getTotalWithTax(cart.cartItems) }}</p>
+        </div>
+      </div>
+      <div class="pt-4">
+        <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        (click)="proceedToCheckout()">
+          Checkout
+        </button>
+      </div>
     </div>
   </div>
-  <div *ngIf="!cart">
-    <p>Loading...</p>
-  </div>
+</div>
+
+<div *ngIf="!cart" class="flex justify-center items-center h-64">
+  <p class="text-xl text-gray-700">Loading...</p>
+</div>

@@ -31,4 +31,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleException(Exception ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred"+ ex.getMessage());
     }
+
+    @ExceptionHandler(UnauthorizedOperationException.class)
+    public ResponseEntity<String> handleUnauthorizedOperationException(UnauthorizedOperationException ex){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
 }

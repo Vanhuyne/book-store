@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FeaturesModule } from './features/features.module';
 import { SharedModule } from './shared/shared.module';
+import { FormsModule } from '@angular/forms';
+import { NgxPayPalModule } from 'ngx-paypal';
 
 
 
@@ -17,9 +19,11 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     FeaturesModule,
     HttpClientModule,
-    SharedModule
+    SharedModule,
+     
   ],
   providers: [],
   bootstrap: [AppComponent]

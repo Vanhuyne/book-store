@@ -26,4 +26,12 @@ export class CartService {
     const params = new HttpParams().set('userId', userId.toString());
     return this.http.get<Cart>(`${this.apiUrl}`, { params });
   }
+  
+  removeCartItem(userId: number, cartItemId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/remove/${userId}/${cartItemId}`);
+  }
+
+  clearCart(userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}/clear`);
+  }
 }
