@@ -104,7 +104,6 @@ public class CartService {
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
         Product product = cartItem.getProduct();
         return new CartItemDTO(
-                cartItem.getCartItemId(),
                 product.getProductId(),
                 product.getName(),
                 product.getPrice(),

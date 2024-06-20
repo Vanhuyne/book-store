@@ -26,10 +26,12 @@ export class CheckoutComponent implements OnInit{
     tax: 0,
     total: 0,
     status: 'Pending',
+    orderItems: [],
     payment:{} as Payment
   };
   public payPalConfig?: IPayPalConfig;
-  paypalButtonDisabled: boolean = true;
+  // paypalButtonDisabled: boolean = true;
+  paymentMethod:string = 'paypal';
 
   constructor(
     private cartService : CartService, 
@@ -61,13 +63,19 @@ export class CheckoutComponent implements OnInit{
       );
       this.order.tax = this.order.subtotal * 0.1; // Assuming a 10% tax rate
       this.order.total = this.order.subtotal + this.order.tax;
+      this.order.orderItems = this.cart.cartItems.map((item : any) => ({
+        productName: item.productName,
+        productThumbnailUrl: item.productThumbnailUrl,
+        productPrice: item.productPrice,
+        quantity: item.quantity
+      }));
     }
   }
   
   private initConfig(): void {
     this.payPalConfig = {
       currency: 'USD', // Set your desired currency code
-      clientId: 'AWRYV5_7m5HfjHIA6pYaRSykCD4ri52KRsy6pP7Xg8cWHjjmh3i1jFH9vriPi1Ga2-E7gr_BoXkdt0yB', // Replace with your PayPal client ID
+      clientId: 'sb', // Replace with your PayPal client ID
       createOrderOnClient: (data) => {
         const purchaseUnits = [
           {
@@ -127,12 +135,11 @@ export class CheckoutComponent implements OnInit{
           'onClientAuthorization - you should probably inform your server about completed transaction at this point',
           data
         );
-        this.order.payment.paymentId = data.id;
-        this.order.payment.payerId = data.payer.payer_id;
+        this.order.payment.paymentMethod = 'PayPal';
         this.order.payment.paymentStatus = data.status;
         this.order.payment.paymentTime = data.update_time;
         this.order.status = 'Completed';
-        this.placeOrder();// Call placeOrder method when payment is authorized
+        this.placeOrder();
       },
       onCancel: (data, actions) => {
         console.log('OnCancel', data, actions);
@@ -149,18 +156,35 @@ export class CheckoutComponent implements OnInit{
     };
   }
 
+
+  onPaymentMethodChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.paymentMethod = target.value;
+  }
+
+  submitOrder() {
+    if (this.paymentMethod === 'payAfterDelivery') {
+      this.order.payment = {
+        paymentMethod: 'Pay After Delivery',
+        paymentStatus: 'Pending',
+        paymentTime: new Date().toISOString(),
+        amount: this.order.total
+      };
+      this.order.status = 'Pending';
+      this.placeOrder();
+    }
+  }
+
   placeOrder() {
     this.orderService.placeOrder(this.order).subscribe({
       next: (order) => {
         console.log('Order placed successfully', order);
-        this.cartService.clearCart(this.userId).subscribe(() => {
-          this.router.navigate(['/order-confirmation'], { state: { order: order } });
-        });
+        // this.cartService.clearCart(this.userId).subscribe(() => {
+        //   this.router.navigate(['/order-confirmation'], { state: { order: order } });
+        // });
       },
       error: err => console.error('Error placing order:', err)
     });
   }
-
-  
   
 }

@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { FeaturesRoutingModule } from './features-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ProductComponent } from './product/product.component';
 import { CartComponent } from './cart/cart.component';
@@ -51,7 +51,8 @@ import { NgxPayPalModule } from 'ngx-paypal';
     CommonModule,
     FeaturesRoutingModule,
     FormsModule,
-    NgxPayPalModule
+    NgxPayPalModule,
+    ReactiveFormsModule 
   ],
 })
 export class FeaturesModule {}

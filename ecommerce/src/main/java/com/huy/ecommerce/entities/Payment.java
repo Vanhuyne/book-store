@@ -23,8 +23,11 @@ public class Payment {
 
     @OneToOne(mappedBy = "payment")
     private Order order;
-    private String payerId;    // PayerId of paypal (e.g., "PayPal")
-    private String paymentStatus;    // Payment method (e.g., "PayPal")
+
+    private String paymentMethod;
+
+    private String paymentStatus;
+    private Double amount;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date paymentTime;
