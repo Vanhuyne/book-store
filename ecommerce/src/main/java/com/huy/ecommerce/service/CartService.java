@@ -31,7 +31,7 @@ public class CartService {
     private final UserRepository userRepository;
 
     public CartDTO getCartByUserId(Long userId) {
-        Cart cart = cartRepository.findByUser_UserId(userId)
+        Cart cart = cartRepository.findByUser_UserIdAndProcessedFalse(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
         return convertToCartDTO(cart);
     }
@@ -92,6 +92,8 @@ public class CartService {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCartId(cart.getCartId());
         cartDTO.setUserId(cart.getUser().getUserId());
+        cartDTO.setProcessed(cart.isProcessed());
+
 
         Set<CartItemDTO> cartItemDTOs = cart.getCartItems().stream()
                 .map(this::convertToCartItemDTO)
@@ -104,6 +106,7 @@ public class CartService {
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
         Product product = cartItem.getProduct();
         return new CartItemDTO(
+                cartItem.getCartItemId(),
                 product.getProductId(),
                 product.getName(),
                 product.getPrice(),
@@ -112,6 +115,7 @@ public class CartService {
         );
     }
 
+    @Transactional
     public void removeCartItem (Long userId ,Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));

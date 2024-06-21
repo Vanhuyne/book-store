@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class CartItemDTO {
+    private Long cartItemId;
     private Long productId;
     private String productName;
     private double productPrice;

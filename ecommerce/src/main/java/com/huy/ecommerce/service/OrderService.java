@@ -3,15 +3,9 @@ package com.huy.ecommerce.service;
 import com.huy.ecommerce.dtos.OrderDTO;
 import com.huy.ecommerce.dtos.OrderItemDTO;
 import com.huy.ecommerce.dtos.PaymentDTO;
-import com.huy.ecommerce.entities.Order;
-import com.huy.ecommerce.entities.OrderItem;
-import com.huy.ecommerce.entities.Payment;
-import com.huy.ecommerce.entities.User;
+import com.huy.ecommerce.entities.*;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
-import com.huy.ecommerce.repository.OrderItemRepository;
-import com.huy.ecommerce.repository.OrderRepository;
-import com.huy.ecommerce.repository.PaymentRepository;
-import com.huy.ecommerce.repository.UserRepository;
+import com.huy.ecommerce.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,6 +23,7 @@ public class OrderService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final OrderItemRepository orderItemRepository;
+    private final CartRepository cartRepository;
 
 
     private OrderDTO convertToDTO(Order order) {
@@ -111,6 +106,11 @@ public class OrderService {
         orderItemRepository.saveAll(orderItems);
         order.setOrderItems(orderItems);
 
+        Cart cart = user.getCart();
+        if (cart != null) {
+            cart.setProcessed(true); // Assuming you have a 'processed' flag in Cart entity
+            cartRepository.save(cart);
+        }
         // Convert the saved order entity back to OrderDTO
         OrderDTO savedOrderDTO = convertToDTO(order);
 

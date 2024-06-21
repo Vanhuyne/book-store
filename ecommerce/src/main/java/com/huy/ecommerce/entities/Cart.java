@@ -28,6 +28,8 @@ public class Cart {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    private boolean processed;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems;
 }

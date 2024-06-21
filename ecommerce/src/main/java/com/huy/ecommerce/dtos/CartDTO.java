@@ -13,5 +13,6 @@ import java.util.Set;
 public class CartDTO {
     private Long cartId;
     private Long userId;
+    private boolean processed;
     private Set<CartItemDTO> cartItems;
 }

@@ -27,6 +27,7 @@ export class CartComponent implements OnInit{
     this.cartService.getCart(userId).subscribe(
     {
       next: cart => this.cart = cart,
+
       
       error: err => console.log(err)
     }
@@ -47,7 +48,9 @@ export class CartComponent implements OnInit{
     return this.getTotal(cartItems) + this.getTax(cartItems);
   }
 
-  removeCartItem(userId: number,cartItemId: number): void {
+  removeCartItem(userId: number, cartItemId: number): void {
+    console.log('Removing cart item:', cartItemId);
+    
     this.cartService.removeCartItem(userId, cartItemId).subscribe(
       () => {
         console.log('Cart item removed successfully');
