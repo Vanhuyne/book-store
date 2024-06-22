@@ -54,5 +54,4 @@ public class Order {
     private String shippingAddress;
     private String shippingCity;
     private String shippingPostalCode;
-
 }

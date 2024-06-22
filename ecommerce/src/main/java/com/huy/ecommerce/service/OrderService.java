@@ -8,7 +8,6 @@ import com.huy.ecommerce.exception.ResourceNotFoundException;
 import com.huy.ecommerce.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -108,7 +107,6 @@ public class OrderService {
 
         Cart cart = user.getCart();
         if (cart != null) {
-            cart.setProcessed(true); // Assuming you have a 'processed' flag in Cart entity
             cartRepository.save(cart);
         }
         // Convert the saved order entity back to OrderDTO

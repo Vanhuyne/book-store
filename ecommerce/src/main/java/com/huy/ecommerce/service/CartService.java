@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(rollbackOn = Exception.class)
 @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
@@ -31,11 +32,10 @@ public class CartService {
     private final UserRepository userRepository;
 
     public CartDTO getCartByUserId(Long userId) {
-        Cart cart = cartRepository.findByUser_UserIdAndProcessedFalse(userId)
+        Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
         return convertToCartDTO(cart);
     }
-    @Transactional
     public CartDTO addProductToCart(Long userId, Long productId, int quantity) {
         //fetch user by id
         User user = userRepository.findById(userId)
@@ -92,8 +92,6 @@ public class CartService {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCartId(cart.getCartId());
         cartDTO.setUserId(cart.getUser().getUserId());
-        cartDTO.setProcessed(cart.isProcessed());
-
 
         Set<CartItemDTO> cartItemDTOs = cart.getCartItems().stream()
                 .map(this::convertToCartItemDTO)
@@ -115,7 +113,6 @@ public class CartService {
         );
     }
 
-    @Transactional
     public void removeCartItem (Long userId ,Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
@@ -132,5 +129,19 @@ public class CartService {
         cartItem.setCart(null);
         cartItemRepository.delete(cartItem);
     }
+
+    // clear cart
+    public void clearCart(Long userId) {
+        Cart cart = cartRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
+
+        cart.getCartItems().forEach(cartItem -> {
+            cartItemRepository.delete(cartItem);
+        });
+
+        cart.getCartItems().clear();
+        cartRepository.save(cart);
+    }
+
 
 }

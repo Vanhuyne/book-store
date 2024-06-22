@@ -7,6 +7,7 @@ import { Order } from '../../shared/dto/order';
 import { ICreateOrderRequest, IPayPalConfig, PayPalScriptService } from 'ngx-paypal';
 import { Payment } from '../../shared/dto/payment';
 import { NgForm } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-checkout',
@@ -15,6 +16,7 @@ import { NgForm } from '@angular/forms';
 })
 export class CheckoutComponent implements OnInit{
   userId : number = 1; // get from local storage
+  apiThumnailUrl = environment.apiUrl + '/products/uploads/';
   cart: Cart | undefined;
   order: Order = {
     userId: this.userId,
@@ -37,7 +39,7 @@ export class CheckoutComponent implements OnInit{
     private cartService : CartService, 
     private router : Router , 
     private orderService :OrderService , 
-    private payPalScriptService: PayPalScriptService){
+  ){
   } 
 
   ngOnInit(): void {
@@ -156,7 +158,6 @@ export class CheckoutComponent implements OnInit{
     };
   }
 
-
   onPaymentMethodChange(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.paymentMethod = target.value;
@@ -179,9 +180,9 @@ export class CheckoutComponent implements OnInit{
     this.orderService.placeOrder(this.order).subscribe({
       next: (order) => {
         console.log('Order placed successfully', order);
-        // this.cartService.clearCart(this.userId).subscribe(() => {
+        this.cartService.clearCart(this.userId).subscribe(() => {
         //   this.router.navigate(['/order-confirmation'], { state: { order: order } });
-        // });
+        });
       },
       error: err => console.error('Error placing order:', err)
     });

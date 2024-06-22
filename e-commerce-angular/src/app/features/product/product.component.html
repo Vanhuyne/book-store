@@ -1,16 +1,15 @@
 <!-- src/app/product/product.component.html -->
-<div *ngIf="product" class="bg-white rounded-lg shadow-lg p-1 overflow-hidden m-2">
-    <!-- <img *ngIf="product.thumbnailUrl" [src]="product.thumbnailUrl" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-t-lg"> -->
-    <img  [src]="apiThumnailUrl + product.thumbnailUrl" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-t-lg">
-    <div class="p-2">
-      <h2 class="text-lg font-semibold">{{ product.name }}</h2>
-      <p class="text-gray-600">{{ product.description }}</p>
-      <p class="text-gray-800 font-bold mt-2">{{ product.price | currency }}</p>
-      <p class="text-gray-500">Stock: {{ product.stockQuantity }}</p>
-      <button  (click)="addToCart()"  class="my-2 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Add to cart
-      </button>
-    </div>
-   
+<div *ngIf="product" class="bg-white shadow-xl rounded p-1 overflow-hidden m-2 mt-20">
+  <img [src]="apiThumnailUrl + product.thumbnailUrl" alt="{{ product.name }}" class="w-full h-48 object-cover">
+  <div class="p-2">
+    <h2 class="text-lg font-semibold">{{ product.name }}</h2>
+    <p class="text-gray-800 font-bold mt-2">{{ product.price | currency }}</p>
+    <p class="text-gray-500">Stock: {{ product.stockQuantity }}</p>
+    <button (click)="addToCart()" class="my-2 w-full bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 flex items-center justify-center space-x-2">
+      <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+      </svg>
+      <span>Add to cart</span>
+    </button>
   </div>
-  
+</div>
