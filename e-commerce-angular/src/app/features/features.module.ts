@@ -11,6 +11,7 @@ import { ProductComponent } from './product/product.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { NgxPayPalModule } from 'ngx-paypal';
+import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 
 // Auth components
 // import { LoginComponent } from './auth/login/login.component';
@@ -45,7 +46,8 @@ import { NgxPayPalModule } from 'ngx-paypal';
     ProductListComponent,
     ProductComponent,
     CartComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    OrderConfirmationComponent
   ],
   imports: [
     CommonModule,

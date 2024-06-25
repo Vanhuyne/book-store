@@ -3,7 +3,6 @@ package com.huy.ecommerce.entities;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

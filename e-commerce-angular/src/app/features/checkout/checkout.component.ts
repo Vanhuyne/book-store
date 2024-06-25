@@ -6,7 +6,6 @@ import { Cart } from '../../shared/dto/cart';
 import { Order } from '../../shared/dto/order';
 import { ICreateOrderRequest, IPayPalConfig, PayPalScriptService } from 'ngx-paypal';
 import { Payment } from '../../shared/dto/payment';
-import { NgForm } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -63,14 +62,14 @@ export class CheckoutComponent implements OnInit{
         (total, item) => total + item.productPrice * item.quantity,
         0
       );
-      this.order.tax = this.order.subtotal * 0.1; // Assuming a 10% tax rate
-      this.order.total = this.order.subtotal + this.order.tax;
-      this.order.orderItems = this.cart.cartItems.map((item : any) => ({
+      this.order.tax = parseFloat((this.order.subtotal * 0.1).toFixed(2)); // Calculate tax and format to 2 decimal places
+      this.order.total = parseFloat((this.order.subtotal + this.order.tax).toFixed(2)); 
+      this.order.orderItems = this.cart.cartItems.map((item: any) => ({
         productName: item.productName,
         productThumbnailUrl: item.productThumbnailUrl,
         productPrice: item.productPrice,
         quantity: item.quantity
-      }));
+    }));
     }
   }
   
@@ -178,10 +177,10 @@ export class CheckoutComponent implements OnInit{
 
   placeOrder() {
     this.orderService.placeOrder(this.order).subscribe({
-      next: (order) => {
+      next: (order : Order) => {
         console.log('Order placed successfully', order);
-        this.cartService.clearCart(this.userId).subscribe(() => {
-        //   this.router.navigate(['/order-confirmation'], { state: { order: order } });
+          this.cartService.clearCart(this.userId).subscribe(() => {
+            this.router.navigate(['/order-confirmation'], { state: { order: order } });
         });
       },
       error: err => console.error('Error placing order:', err)

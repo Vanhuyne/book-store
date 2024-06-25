@@ -21,7 +21,6 @@ export class CartComponent implements OnInit{
   ngOnInit(): void {
     this.loadCart();
   }
-
   loadCart(){
     this.loadingCart = true;
     this.cartService.getCart(this.userId).subscribe({
@@ -36,16 +35,16 @@ export class CartComponent implements OnInit{
     });
   }
 
-  getTotal(cartItem : CartItem[]): number{
-    return cartItem.reduce((total, item) => total + item.productPrice * item.quantity, 0);
+  getTotal(cartItem: CartItem[]): number {
+    return parseFloat(cartItem.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2));
   }
 
-  getTax(cartItem : CartItem[]): number{
-    return this.getTotal(cartItem) * 0.1; // Assume a 10% tax rate
+  getTax(cartItem: CartItem[]): number {
+    return parseFloat((this.getTotal(cartItem) * 0.1).toFixed(2)); // Assume a 10% tax rate
   }
 
   getTotalWithTax(cartItems: CartItem[]): number {
-    return this.getTotal(cartItems) + this.getTax(cartItems);
+    return parseFloat((this.getTotal(cartItems) + this.getTax(cartItems)).toFixed(2));
   }
 
   removeCartItem(userId: number, cartItemId: number): void {
