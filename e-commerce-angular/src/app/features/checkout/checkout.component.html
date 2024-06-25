@@ -75,13 +75,13 @@
     <div class="md:w-1/2 pe-4">
       <div class="mt-4">
         <label class="block text-gray-700">Payment Method</label>
-        <select [(ngModel)]="paymentMethod" name="paymentMethod" (change)="onPaymentMethodChange($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
-          <option value="paypal">PayPal</option>
-          <option value="payAfterDelivery">Pay After Delivery</option>
-        </select>
+          <select [(ngModel)]="paymentMethod" name="paymentMethod" (change)="onPaymentMethodChange($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+            <option value="paypal">PayPal</option>
+            <option value="payAfterDelivery">Pay After Delivery</option>
+          </select>
       </div>
       <!-- PayPal Button -->
-      <div *ngIf="paymentMethod === 'paypal' && order.total > 0" class="pt-4">
+      <div *ngIf="paymentMethod === 'paypal'" class="pt-4">
         <ngx-paypal [config]="payPalConfig"></ngx-paypal>
       </div>
       <!-- Submit Button for Pay After Delivery -->

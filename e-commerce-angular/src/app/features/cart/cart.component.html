@@ -24,7 +24,10 @@
             <p class="text-lg text-gray-700">${{ item.productPrice }}</p>
           </div>
           <div class="col-span-1 flex items-center justify-end space-x-2">
-            <button (click)="decreaseQuantity(item)" class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
+            <button 
+            (click)="decreaseQuantity(item)" 
+            [disabled]="loadingCart"
+            class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
               <i class="fas fa-minus " style="font-size: 18px;">-</i>
             </button>
             <p class="text-lg text-gray-700">{{ item.quantity }}</p>
@@ -73,6 +76,6 @@
   </div>
 </div>
 
-<div *ngIf="!cart" class="flex justify-center items-center h-64">
+<!-- <div *ngIf="!cart" class="flex justify-center items-center h-64">
   <p class="text-xl text-gray-700">Loading...</p>
-</div>
+</div> -->

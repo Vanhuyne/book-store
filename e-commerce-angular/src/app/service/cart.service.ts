@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Cart } from '../shared/dto/cart';
+import { CartItem } from '../shared/dto/cart-item';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,15 @@ export class CartService {
 
   clearCart(userId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/clear/${userId}`);
+  }
+
+  increaseQuantity(userId: number, cartItemId: number): Observable<CartItem> {
+    const url = `${this.apiUrl}/${userId}/increaseQuantity/${cartItemId}`;
+    return this.http.post<CartItem>(url, {});
+  }
+
+  decreaseQuantity(userId: number, cartItemId: number): Observable<CartItem> {
+    const url = `${this.apiUrl}/${userId}/decreaseQuantity/${cartItemId}`;
+    return this.http.post<CartItem>(url, {});
   }
 }

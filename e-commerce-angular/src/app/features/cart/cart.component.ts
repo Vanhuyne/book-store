@@ -15,6 +15,7 @@ export class CartComponent implements OnInit{
   userId : number = 1; // get from local storage
   cart : Cart | undefined ;
   apiThumnailUrl = environment.apiUrl + '/products/uploads/';
+  loadingCart: boolean = false;
 
   constructor(private cartService : CartService, private router : Router){}
   ngOnInit(): void {
@@ -22,15 +23,17 @@ export class CartComponent implements OnInit{
   }
 
   loadCart(){
-    const userId = 1; // get from local storage
-    this.cartService.getCart(userId).subscribe(
-    {
-      next: cart => this.cart = cart,
-      error: err => console.log(err)
-    }
-    );
-    console.log(this.cart);
-    
+    this.loadingCart = true;
+    this.cartService.getCart(this.userId).subscribe({
+      next: cart => {
+        this.cart = cart;
+        console.log('Cart loaded:', this.cart); // Log the cart here
+      },
+      error: err => console.log(err),
+      complete: () => {
+        this.loadingCart = false; // Clear loading flag when request completes
+      }
+    });
   }
 
   getTotal(cartItem : CartItem[]): number{
@@ -58,21 +61,61 @@ export class CartComponent implements OnInit{
         // Handle error as needed (e.g., show error message)
       }
     );
-    }
+  }
 
-    proceedToCheckout() {
-      this.router.navigate(['/checkout']);
-    }
+  proceedToCheckout() {
+    this.router.navigate(['/checkout']);
+  }
+ 
+  increaseQuantity(cartItem: CartItem): void {
+    this.cartService.increaseQuantity(this.userId, cartItem.cartItemId).subscribe(
+      (updatedCartItem) => {
+        if (updatedCartItem) {
+          console.log('Quantity increased successfully:', updatedCartItem);
+          // Update local cart with the updated cart item
+          if (this.cart) {
+            const index = this.cart.cartItems.findIndex(item => item.cartItemId === updatedCartItem.cartItemId);
+            if (index !== -1) {
+              this.cart.cartItems[index] = updatedCartItem;
+            }
+          }
+        } else {
+          console.error('Error: Received null or undefined cart item.');
+          // Handle error scenario, such as displaying an error message
+        }
+      },
+      error => {
+        console.error('Error increasing quantity:', error.error);
+        // Handle error as needed
+      }
+    );
+  }
 
-    increaseQuantity(item: any) {
-      // item.quantity++;
-      // this.calculateOrderSummary();
-    }
+  decreaseQuantity(cartItem: CartItem): void {
+    this.cartService.decreaseQuantity(this.userId, cartItem.cartItemId).subscribe(
+      (updatedCartItem) => {
+        if (updatedCartItem) {
+          console.log('Quantity increased successfully:', updatedCartItem);
+          // Update local cart with the updated cart item
+          if (this.cart) {
+            const index = this.cart.cartItems.findIndex(item => item.cartItemId === updatedCartItem.cartItemId);
+            if (index !== -1) {
+              this.cart.cartItems[index] = updatedCartItem;
+            }
+          }
+        } else {
+          console.log('Cart item quantity is now zero and it has been removed.');
+          // Remove the cart item 
+          if (this.cart) {
+            this.cart.cartItems = this.cart.cartItems.filter(item => item.cartItemId !== cartItem.cartItemId);
+          }
+        }
+      },
+      error => {
+        console.error('Error decrease quantity:', error);
+        // Handle error as needed
+      }
+    );
+  }
 
-    decreaseQuantity(item: any) {
-      // if (item.quantity > 1) {
-      //   item.quantity--;
-      //   this.calculateOrderSummary();
-      // }
-    }
 }

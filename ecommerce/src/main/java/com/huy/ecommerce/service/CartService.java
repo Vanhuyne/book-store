@@ -36,6 +36,7 @@ public class CartService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
         return convertToCartDTO(cart);
     }
+
     public CartDTO addProductToCart(Long userId, Long productId, int quantity) {
         //fetch user by id
         User user = userRepository.findById(userId)
@@ -135,7 +136,10 @@ public class CartService {
         Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
 
-        cart.getCartItems().forEach(cartItem -> {
+        cart.getCartItems().stream().forEach(cartItem -> {
+            Product product = cartItem.getProduct();
+            product.setStockQuantity(product.getStockQuantity() + cartItem.getQuantity());
+            productRepository.save(product);
             cartItemRepository.delete(cartItem);
         });
 
@@ -143,5 +147,55 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    // increase CartItem quantity in cart
+    public CartItemDTO increaseCartItemQuantity (Long userId , Long cartItemId){
+        Cart cart = cartRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
 
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getCartItemId().equals(cartItemId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
+
+        Product product = cartItem.getProduct();
+
+
+        if (product.getStockQuantity() <= 0) {
+            throw new ResourceNotFoundException("Product out of stock");
+        }
+
+        cartItem.setQuantity(cartItem.getQuantity() + 1);
+        product.setStockQuantity(product.getStockQuantity() - 1);
+
+        productRepository.save(product);
+        CartItem updatedCartItem = cartItemRepository.save(cartItem);
+
+        return convertToCartItemDTO(updatedCartItem);
+
+    }
+
+    // decrease CartItem quantity in cart
+    public CartItemDTO decreaseCartItemQuantity (Long userId , Long cartItemId) {
+        Cart cart = cartRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
+
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getCartItemId().equals(cartItemId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
+
+        Product product = cartItem.getProduct();
+
+        if (cartItem.getQuantity() == 1) {
+            removeCartItem(userId, cartItemId);
+            return null;
+        }
+
+        cartItem.setQuantity(cartItem.getQuantity() - 1);
+        product.setStockQuantity(product.getStockQuantity() + 1);
+        productRepository.save(product);
+        CartItem updatedCartItem = cartItemRepository.save(cartItem);
+
+        return convertToCartItemDTO(updatedCartItem);
+    }
 }

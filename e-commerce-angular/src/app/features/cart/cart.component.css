@@ -1,0 +1,3 @@
+.cart-item {
+    transition: transform 0.3s ease-in-out; /* Example transition */
+  }

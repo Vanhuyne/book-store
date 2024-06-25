@@ -1,6 +1,8 @@
 package com.huy.ecommerce.controller;
 
 import com.huy.ecommerce.dtos.CartDTO;
+import com.huy.ecommerce.dtos.CartItemDTO;
+import com.huy.ecommerce.entities.CartItem;
 import com.huy.ecommerce.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +43,20 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{userId}/increaseQuantity/{cartItemId}")
+    public ResponseEntity<CartItemDTO> increaseCartItemQuantity(
+            @PathVariable Long userId,
+            @PathVariable Long cartItemId) {
+        CartItemDTO updatedCartItem = cartService.increaseCartItemQuantity(userId, cartItemId);
+        return ResponseEntity.ok(updatedCartItem);
+    }
+
+    @PostMapping("/{userId}/decreaseQuantity/{cartItemId}")
+    public ResponseEntity<CartItemDTO> decreaseCartItemQuantity(
+            @PathVariable Long userId,
+            @PathVariable Long cartItemId) {
+        CartItemDTO updatedCartItem = cartService.decreaseCartItemQuantity(userId, cartItemId);
+        return ResponseEntity.ok(updatedCartItem);
+    }
 
 }

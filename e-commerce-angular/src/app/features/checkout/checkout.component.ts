@@ -33,7 +33,7 @@ export class CheckoutComponent implements OnInit{
   };
   public payPalConfig?: IPayPalConfig;
   // paypalButtonDisabled: boolean = true;
-  paymentMethod:string = 'paypal';
+  paymentMethod:string = 'payAfterDelivery';
 
   constructor(
     private cartService : CartService, 
