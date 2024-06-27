@@ -14,6 +14,7 @@ import com.huy.ecommerce.repository.ProductRepository;
 import com.huy.ecommerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class CartService {
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     public CartDTO getCartByUserId(Long userId) {
         Cart cart = cartRepository.findByUser_UserId(userId)
@@ -93,6 +95,7 @@ public class CartService {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCartId(cart.getCartId());
         cartDTO.setUserId(cart.getUser().getUserId());
+        cartDTO.setCreatedAt(LocalDateTime.now());
 
         Set<CartItemDTO> cartItemDTOs = cart.getCartItems().stream()
                 .map(this::convertToCartItemDTO)

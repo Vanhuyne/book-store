@@ -4,6 +4,7 @@ import { ProductService } from '../../service/product.service';
 import { Page } from '../../shared/dto/page';
 import { Product } from '../../shared/dto/product';
 import { CartService } from '../../service/cart.service';
+import { Category } from '../../shared/dto/category';
 
 @Component({
   selector: 'app-product-list',
@@ -14,24 +15,41 @@ export class ProductListComponent implements OnInit{
   products: Product[] = [];
   totalPages: number = 0;
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 2;
+  pageNumbers: number[] = [];
+  selectedCategory: string | null = null;
+  categories: Category[] = [];
 
   constructor(private productService: ProductService , private cartService : CartService) { }
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories();
   }
 
-  loadProducts(page: number = 0, size: number = 10): void {
-    this.productService.getAllProducts(page, size).subscribe((data: Page<Product>) => {
-      
+  loadProducts(page: number = 0, size : number =  this.pageSize ): void {
+    this.productService.getAllProducts(page, size, this.selectedCategory || undefined).subscribe((data: Page<Product>) => {
       this.products = data.content;
       console.log(this.products);
       this.totalPages = data.totalPages;
       this.currentPage = data.number;
+      this.pageNumbers = Array.from({length: this.totalPages}, (_, k) => k);
     });
   }
 
+  loadCategories(): void {
+    this.productService.getCategories().subscribe((categories: Category[]) => {
+      this.categories = categories;
+      console.log(this.categories.map(c => c.name));
+      
+    });
+  }
+
+  filterByCategory(category: string): void {
+    this.selectedCategory = category;
+    this.currentPage = 0; // Reset to first page when filtering
+    this.loadProducts();
+  }
   addToCart(productId: number) {
     const userId = 1; // Replace with a valid user ID
     const quantity = 1; // Default quantity to add to cart
@@ -42,4 +60,24 @@ export class ProductListComponent implements OnInit{
     });
   }
 
+  nextPage() :void {
+    if(this.currentPage + 1 < this.totalPages) {
+      this.loadProducts(this.currentPage + 1);
+    }
+  }
+
+  previousPage() :void {
+    if(this.currentPage > 0) {
+      this.loadProducts(this.currentPage - 1);
+    }
+  }
+
+  goToPage(page: number): void {
+    this.loadProducts(page);
+  }
+
+  showAllProducts(): void {
+    this.selectedCategory = null; 
+    this.loadProducts(); // Reload all products
+  }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 @Getter
 @Setter
@@ -13,6 +14,6 @@ import java.util.Set;
 public class CartDTO {
     private Long cartId;
     private Long userId;
-    private boolean processed;
+    private LocalDateTime createdAt;
     private Set<CartItemDTO> cartItems;
 }

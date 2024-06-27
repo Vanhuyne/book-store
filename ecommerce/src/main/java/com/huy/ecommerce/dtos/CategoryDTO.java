@@ -1,2 +1,15 @@
-package com.huy.ecommerce.dtos;public class CategoryDTO {
+package com.huy.ecommerce.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class CategoryDTO {
+    private Long categoryId;
+    private String name;
 }

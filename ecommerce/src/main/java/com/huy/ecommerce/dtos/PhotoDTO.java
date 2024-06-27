@@ -12,9 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PhotoDTO {
     private Long photoId;
-
-    @Size(max = 255)
     private String url;
-
     private Long productId;
 }

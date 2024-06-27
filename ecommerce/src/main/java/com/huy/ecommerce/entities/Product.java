@@ -46,7 +46,6 @@ public class Product {
 
     private LocalDateTime updatedAt;
 
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Review> reviews;
 

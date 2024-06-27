@@ -2,6 +2,7 @@ package com.huy.ecommerce.service;
 
 import com.huy.ecommerce.dtos.PhotoDTO;
 import com.huy.ecommerce.dtos.ProductDTO;
+import com.huy.ecommerce.entities.CartItem;
 import com.huy.ecommerce.entities.Photo;
 import com.huy.ecommerce.entities.Product;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
@@ -82,9 +83,13 @@ public class ProductService {
     }
 
     // get all products
-    public Page<ProductDTO> getAllProducts(int page, int size) {
+    public Page<ProductDTO> getAllProducts(int page, int size, String category) {
         Pageable pageable = PageRequest.of(page ,size);
-        return productRepository.findAll(pageable).map(this::convertToDTO);
+        if (category != null) {
+            return productRepository.findByCategoryName(category, pageable).map(this::convertToDTO);
+        }else {
+            return productRepository.findAll(pageable).map(this::convertToDTO);
+        }
     }
 
     // create product

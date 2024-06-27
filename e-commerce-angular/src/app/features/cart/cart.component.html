@@ -1,6 +1,7 @@
 <div *ngIf="cart" class="p-4 max-w-7xl mx-auto bg-white shadow-md space-y-4 container">
   <a [routerLink]="['/']" class="flex items-center hover:underline mt-20">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+      class="w-6 h-6 mr-2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
     </svg>
     Back to shopping
@@ -21,7 +22,8 @@
       </div>
       <!-- Cart items -->
       <div *ngFor="let item of cart.cartItems" class="flex items-center border-b py-4 space-x-4">
-        <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}" class="w-20 h-20 object-cover">
+        <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}"
+          class="w-20 h-20 object-cover">
         <div class="flex-1 grid grid-cols-4 gap-4 items-center">
           <div class="col-span-2">
             <p class="text-lg text-gray-700">{{ item.productName }}</p>
@@ -30,27 +32,31 @@
             <p class="text-lg text-gray-700">${{ item.productPrice }}</p>
           </div>
           <div class="col-span-1 flex items-center justify-end space-x-2">
-            <button 
-            (click)="decreaseQuantity(item)" 
-            [disabled]="loadingCart"
-            class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-            </svg>
-            
+            <button (click)="decreaseQuantity(item)" [disabled]="loadingCart"
+              class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                stroke="currentColor" className="size-">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+              </svg>
+
             </button>
             <p class="text-lg text-gray-700">{{ item.quantity }}</p>
-            <button (click)="increaseQuantity(item)" class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
-              <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+            <button (click)="increaseQuantity(item)"
+              class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
+              <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 12h14m-7 7V5" />
               </svg>
-              
+
             </button>
           </div>
         </div>
         <button (click)="removeCartItem(userId, item.cartItemId)" class="text-red-600 hover:text-red-800 font-bold">
-          <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+          <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
+              d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
           </svg>
         </button>
       </div>
@@ -77,7 +83,7 @@
       </div>
       <div class="pt-4">
         <button class="w-full bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4"
-        (click)="proceedToCheckout()">
+          (click)="proceedToCheckout()">
           Checkout
         </button>
       </div>
