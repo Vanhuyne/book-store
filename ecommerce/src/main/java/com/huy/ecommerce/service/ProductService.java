@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -160,5 +161,13 @@ public class ProductService {
        Product product = productRepository.findById(productId)
                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
        return convertToDTO(product);
+    }
+
+    // search product by keyword
+    public Page<ProductDTO> searchProductsByKeyword(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> products = productRepository.searchProductsByKeyword(keyword, pageable);
+
+        return products.map(this::convertToDTO);
     }
 }

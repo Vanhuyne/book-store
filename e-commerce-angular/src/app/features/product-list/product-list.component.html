@@ -24,7 +24,7 @@
   <div class=" mx-4 flex justify-start items-start">
     <h3 class="text-2xl font-bold ">Product</h3>
   </div>
-  <div *ngIf="products.length" class="grid grid-cols-4 gap-4">
+  <div *ngIf="products.length" class="grid grid-cols-5 gap-4">
     <app-product *ngFor="let product of products" [product]="product"
       (addToCartClicked)="addToCart($event)"></app-product>
   </div>

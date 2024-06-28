@@ -75,4 +75,12 @@ public class ProductController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductDTO>> searchProductsByKeyword(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam String keyword) {
+        return ResponseEntity.ok(productService.searchProductsByKeyword(keyword, page, size));
+    }
 }

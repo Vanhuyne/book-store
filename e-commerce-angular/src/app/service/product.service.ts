@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Page } from '../shared/dto/page';
 import { Product } from '../shared/dto/product';
@@ -13,6 +13,7 @@ export class ProductService {
 
   private apiUrl = environment.apiUrl + '/products';
   private categoryUrl  = environment.apiUrl + '/categories';
+
 
   constructor(private http : HttpClient) { 
   }
@@ -30,4 +31,15 @@ export class ProductService {
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.categoryUrl);
   }
+
+  searchProducts(keyword: string ,page: number, size: number): Observable<Page<Product>> {
+    let params = new HttpParams()
+      .set('keyword', keyword)
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<Page<Product>>(`${this.apiUrl}/search`, { params });
+  }
+
+
 }

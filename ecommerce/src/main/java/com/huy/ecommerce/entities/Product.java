@@ -26,6 +26,8 @@ public class Product {
     private Long productId;
 
     private String name;
+
+    @Size(max = 1000)
     private String description;
 
     @Positive
@@ -45,9 +47,6 @@ public class Product {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Review> reviews;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems;
