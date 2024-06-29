@@ -5,7 +5,6 @@ import { Page } from '../../shared/dto/page';
 import { Product } from '../../shared/dto/product';
 import { CartService } from '../../service/cart.service';
 import { Category } from '../../shared/dto/category';
-import { Subscription } from 'rxjs';
 import { SharedService } from '../../service/shared.service';
 
 @Component({
@@ -21,7 +20,6 @@ export class ProductListComponent implements OnInit{
   pageNumbers: number[] = [];
   selectedCategory: string | null = null;
   categories: Category[] = [];
-
 
   constructor(
     private productService: ProductService , 

@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
