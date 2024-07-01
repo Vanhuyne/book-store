@@ -7,23 +7,22 @@ import { IndividualConfig, ToastrService } from 'ngx-toastr';
 export class NotificationService {
   constructor(private toastr: ToastrService) { }
 
-  showSuccess(message: string, title: string = 'Success') {
-    const config: Partial<IndividualConfig> = {
-      timeOut: 1500,
+  private createToastConfig(): Partial<IndividualConfig> {
+    return {
+      timeOut: 1000,
       closeButton: true,
       progressBar: true,
       progressAnimation: 'increasing',
-
     };
-    this.toastr.success(message, title, config);
   }
-  showError(message: string, title: string = 'Error') {
-    const config: Partial<IndividualConfig> = {
-      timeOut: 1500,
-      closeButton: true,
-      progressBar: true,
-      progressAnimation: 'increasing',
-    };
-    this.toastr.error(message, title, config);
+
+  showSuccess(message: string) {
+    const config = this.createToastConfig();
+    this.toastr.success(message, '', config);
+  }
+
+  showError(message: string) {
+    const config = this.createToastConfig();
+    this.toastr.error(message, '', config);
   }
 }

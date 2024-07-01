@@ -5,13 +5,15 @@ import { Observable, tap } from 'rxjs';
 import { UserRegistrationDTO } from '../models/auth/user-registration-dto';
 import { AuthRequest } from '../models/auth/auth-request';
 import { AuthResponse } from '../models/auth/auth-response';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private baseUrl = environment.apiUrl + '/auth';
-  private tokenKey = 'authToken';
+  private readonly tokenKey = 'authToken';
+  private jwtHelper = new JwtHelperService();
 
   constructor(private http: HttpClient) { }
 
@@ -34,5 +36,21 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+  }
+
+  getUsernameFromToken(): string | null{
+    const token = this.getToken();
+    if (token) {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      console.log(decodedToken);
+      
+      return decodedToken ? decodedToken.sub : null;
+    }
+    return null;
+  }
+
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    return token != null && !this.jwtHelper.isTokenExpired(token);
   }
 }

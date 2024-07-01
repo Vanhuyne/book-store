@@ -9,16 +9,14 @@ import { initFlowbite } from 'flowbite';
 })
 export class AppComponent implements OnInit  {
   title = 'E-commerce-angular';
+  showHeaderFooter = true;
+
+  constructor(private router: Router) {}
+
   ngOnInit(): void {
     initFlowbite();
-  }
-
-  showHeaderFooter: boolean = true;
-
-  constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // Define the routes where you don't want to show header and footer
         const noHeaderFooterRoutes = ['/login', '/register'];
         this.showHeaderFooter = !noHeaderFooterRoutes.includes(event.url);
       }

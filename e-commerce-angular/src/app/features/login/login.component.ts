@@ -27,8 +27,8 @@ export class LoginComponent {
       this.authService.login({username: this.username, password: this.password}).subscribe({ 
         next: (response) => {
           console.log('Login successful : ', response);
-          this.notificationService.showSuccess('Login successful'); 
-          // this.router.navigate(['/']);
+          this.notificationService.showSuccess('Login successful');
+          this.router.navigate(['/']);
         },
         error: (err) => {
           console.error('Login failed', err.error.message);
@@ -41,14 +41,12 @@ export class LoginComponent {
 
   forgotPassword() {
     throw new Error('Method not implemented.');
-    }
-
+  }
+  
   navigateToRegister() {
       this.router.navigate(['/register']);
    }
   loginWithGoogle() {
     throw new Error('Method not implemented.');
   }
-
-  
 }
