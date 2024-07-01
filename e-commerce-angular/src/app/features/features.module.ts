@@ -54,7 +54,7 @@ import { OrderConfirmationComponent } from './order-confirmation/order-confirmat
     FeaturesRoutingModule,
     FormsModule,
     NgxPayPalModule,
-    ReactiveFormsModule 
+    
   ],
 })
 export class FeaturesModule {}

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ProductService } from '../../service/product.service';
-import { Page } from '../../shared/dto/page';
-import { Product } from '../../shared/dto/product';
+import { Page } from '../../models/page';
+import { Product } from '../../models/product';
 import { CartService } from '../../service/cart.service';
-import { Category } from '../../shared/dto/category';
+import { Category } from '../../models/category';
 import { SharedService } from '../../service/shared.service';
 
 @Component({

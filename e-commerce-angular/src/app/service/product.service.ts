@@ -2,9 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Page } from '../shared/dto/page';
-import { Product } from '../shared/dto/product';
-import { Category } from '../shared/dto/category';
+import { Page } from '../models/page';
+import { Product } from '../models/product';
+import { Category } from '../models/category';
 
 @Injectable({
   providedIn: 'root'

@@ -1,4 +1,4 @@
-package com.huy.ecommerce.config;
+package com.huy.ecommerce.components;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

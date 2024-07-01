@@ -1,4 +1,4 @@
-package com.huy.ecommerce.config;
+package com.huy.ecommerce.components;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -48,7 +48,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSigningKey() , SignatureAlgorithm.ES256)
+                .signWith(getSigningKey() , SignatureAlgorithm.HS256)
                 .compact();
     }
 

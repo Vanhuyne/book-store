@@ -27,6 +27,7 @@ public class Product {
 
     private String name;
 
+
     @Size(max = 1000)
     private String description;
 

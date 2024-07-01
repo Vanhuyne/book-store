@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Order } from '../../shared/dto/order';
+import { Order } from '../../models/order';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Product } from '../dto/product';
+import { Product } from '../../models/product';
 import { ProductService } from '../../service/product.service';
 import { SharedService } from '../../service/shared.service';
 

@@ -1,4 +1,4 @@
-package com.huy.ecommerce.repository.jpa;
+package com.huy.ecommerce.repository;
 
 import com.huy.ecommerce.entities.Product;
 import org.springframework.data.domain.Page;

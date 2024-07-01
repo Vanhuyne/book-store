@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Cart } from '../../shared/dto/cart';
+import { Cart } from '../../models/cart';
 import { CartService } from '../../service/cart.service';
 import { environment } from '../../../environments/environment';
-import { CartItem } from '../../shared/dto/cart-item';
+import { CartItem } from '../../models/cart-item';
 import { Router } from '@angular/router';
 
 @Component({

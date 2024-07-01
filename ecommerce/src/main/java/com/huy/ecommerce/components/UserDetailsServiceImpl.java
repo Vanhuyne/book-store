@@ -1,4 +1,4 @@
-package com.huy.ecommerce.config;
+package com.huy.ecommerce.components;
 
 import com.huy.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

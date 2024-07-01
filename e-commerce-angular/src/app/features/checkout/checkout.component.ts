@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../service/cart.service';
 import { Router } from '@angular/router';
 import { OrderService } from '../../service/order.service';
-import { Cart } from '../../shared/dto/cart';
-import { Order } from '../../shared/dto/order';
+import { Cart } from '../../models/cart';
+import { Order } from '../../models/order';
 import { ICreateOrderRequest, IPayPalConfig, PayPalScriptService } from 'ngx-paypal';
-import { Payment } from '../../shared/dto/payment';
+import { Payment } from '../../models/payment';
 import { environment } from '../../../environments/environment';
 
 @Component({

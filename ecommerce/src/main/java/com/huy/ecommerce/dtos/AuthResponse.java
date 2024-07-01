@@ -1,2 +1,14 @@
-package com.huy.ecommerce.dtos;public class AuthResponse {
+package com.huy.ecommerce.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthResponse {
+    private String token;
 }

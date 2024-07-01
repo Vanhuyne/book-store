@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Product } from '../../shared/dto/product';
+import { Product } from '../../models/product';
 import { environment } from '../../../environments/environment';
 import { CartService } from '../../service/cart.service';
 

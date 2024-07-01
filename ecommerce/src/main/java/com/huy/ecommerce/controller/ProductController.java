@@ -82,4 +82,11 @@ public class ProductController {
             @RequestParam String keyword) {
         return ResponseEntity.ok(productService.searchProductsByKeyword(keyword, page, size));
     }
+
+//    @GetMapping("/search")
+//    public ResponseEntity<Page<ProductDocument>> searchProducts(@RequestParam String keyword,
+//                                                                @RequestParam(defaultValue = "0") int page,
+//                                                                @RequestParam(defaultValue = "10") int size) {
+//        return ResponseEntity.ok(productService.searchProducts(keyword, page, size));
+//    }
 }

@@ -2,7 +2,6 @@ package com.huy.ecommerce.service;
 
 import com.huy.ecommerce.dtos.PhotoDTO;
 import com.huy.ecommerce.dtos.ProductDTO;
-import com.huy.ecommerce.entities.CartItem;
 import com.huy.ecommerce.entities.Photo;
 import com.huy.ecommerce.entities.Product;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
@@ -23,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -170,4 +168,6 @@ public class ProductService {
 
         return products.map(this::convertToDTO);
     }
+
+
 }
