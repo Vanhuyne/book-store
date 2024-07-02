@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path :'checkout', component: CheckoutComponent},
-  { path : 'order-confirmation', component: OrderConfirmationComponent },
+  { path :'order-confirmation', component: OrderConfirmationComponent },
   // Add other feature routes here
 ];
 

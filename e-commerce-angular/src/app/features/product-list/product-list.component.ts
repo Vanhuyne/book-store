@@ -6,6 +6,7 @@ import { Product } from '../../models/product';
 import { CartService } from '../../service/cart.service';
 import { Category } from '../../models/category';
 import { SharedService } from '../../service/shared.service';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-product-list',
@@ -24,7 +25,8 @@ export class ProductListComponent implements OnInit{
   constructor(
     private productService: ProductService , 
     private cartService : CartService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -39,7 +41,6 @@ export class ProductListComponent implements OnInit{
   loadProducts(page: number = 0, size : number =  this.pageSize ): void {
     this.productService.getAllProducts(page, size, this.selectedCategory || undefined).subscribe((data: Page<Product>) => {
       this.products = data.content;
-      console.log(this.products);
       this.totalPages = data.totalPages;
       this.currentPage = data.number;
       this.pageNumbers = Array.from({length: this.totalPages}, (_, k) => k);
@@ -49,8 +50,6 @@ export class ProductListComponent implements OnInit{
   loadCategories(): void {
     this.productService.getCategories().subscribe((categories: Category[]) => {
       this.categories = categories;
-      console.log(this.categories.map(c => c.name));
-      
     });
   }
 
@@ -59,14 +58,20 @@ export class ProductListComponent implements OnInit{
     this.currentPage = 0; // Reset to first page when filtering
     this.loadProducts();
   }
-  addToCart(productId: number) {
-    const userId = 1; // Replace with a valid user ID
-    const quantity = 1; // Default quantity to add to cart
 
-    this.cartService.addProductToCart(userId, productId, quantity).subscribe({
-      next: (cart) => console.log('Product added to cart', cart),
-      error: (err) => console.error('Error adding product to cart:', err)
-    });
+  addToCart(productId: number) {
+   this.authService.getUser().subscribe(user => {
+    if(user){
+      const userId = user.userId;
+      const quantity = 1; // Default quantity to add to cart
+      this.cartService.addProductToCart(userId, productId, quantity).subscribe({
+        next: (cart) => console.log('Product added to cart', cart),
+        error: (err) => console.error('Error adding product to cart:', err)
+      });
+    }else {
+      console.error('User not logged in. Cannot add product to cart');
+    }
+   })
   }
 
   nextPage() :void {
@@ -87,7 +92,7 @@ export class ProductListComponent implements OnInit{
 
   showAllProducts(): void {
     this.selectedCategory = null; 
-    this.loadProducts(); // Reload all products
+    this.loadProducts();
   }
 
   searchProducts(keyword: string, page: number = 0, size: number = this.pageSize): void {

@@ -4,6 +4,7 @@ import com.huy.ecommerce.components.JwtService;
 import com.huy.ecommerce.components.UserDetailsServiceImpl;
 import com.huy.ecommerce.dtos.AuthRequest;
 import com.huy.ecommerce.dtos.AuthResponse;
+import com.huy.ecommerce.dtos.UserDTO;
 import com.huy.ecommerce.dtos.UserRegistrationDTO;
 import com.huy.ecommerce.entities.Role;
 import com.huy.ecommerce.entities.User;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
     private final UserDetailsServiceImpl userDetailsService;
 
     public User register(UserRegistrationDTO userDTO) {
@@ -57,7 +60,6 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-
     public AuthResponse login(AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -70,6 +72,33 @@ public class UserService {
         final String jwt = jwtService.generateToken(userDetails);
 
         return new AuthResponse(jwt);
+    }
+
+    public UserDTO findByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return convertToDTO(user);
+    }
+
+    private UserDTO convertToDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setProfilePictureUrl(user.getProfilePictureUrl());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
+
+        Set<String> roles = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+        userDTO.setRoles(roles);
+        return userDTO;
     }
 
 

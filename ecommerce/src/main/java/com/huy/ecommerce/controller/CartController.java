@@ -2,7 +2,6 @@ package com.huy.ecommerce.controller;
 
 import com.huy.ecommerce.dtos.CartDTO;
 import com.huy.ecommerce.dtos.CartItemDTO;
-import com.huy.ecommerce.entities.CartItem;
 import com.huy.ecommerce.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,5 +56,6 @@ public class CartController {
         CartItemDTO updatedCartItem = cartService.decreaseCartItemQuantity(userId, cartItemId);
         return ResponseEntity.ok(updatedCartItem);
     }
+
 
 }

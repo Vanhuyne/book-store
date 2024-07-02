@@ -4,6 +4,7 @@ import { CartService } from '../../service/cart.service';
 import { environment } from '../../../environments/environment';
 import { CartItem } from '../../models/cart-item';
 import { Router } from '@angular/router';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -12,25 +13,42 @@ import { Router } from '@angular/router';
 })
 export class CartComponent implements OnInit{
 
-  userId : number = 1; // get from local storage
+  userId : number = 0; 
   cart : Cart | undefined ;
   apiThumnailUrl = environment.apiUrl + '/products/uploads/';
   loadingCart: boolean = false;
 
-  constructor(private cartService : CartService, private router : Router){}
+  constructor(
+    private cartService : CartService, 
+    private router : Router,
+    private authService : AuthService){}
+
   ngOnInit(): void {
-    this.loadCart();
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.authService.getUser().subscribe(user => {
+      if (user) {
+        this.userId = user.userId;
+        this.loadCart();
+      } else {
+        console.error('User not found');
+        this.router.navigate(['/login']);
+      }
+    });
+    
   }
   loadCart(){
     this.loadingCart = true;
     this.cartService.getCart(this.userId).subscribe({
       next: cart => {
         this.cart = cart;
-        console.log('Cart loaded:', this.cart); // Log the cart here
+        console.log('Cart loaded: ', this.cart); 
       },
       error: err => console.log(err),
       complete: () => {
-        this.loadingCart = false; // Clear loading flag when request completes
+        this.loadingCart = false; 
       }
     });
   }

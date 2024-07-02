@@ -7,6 +7,7 @@ import { Order } from '../../models/order';
 import { ICreateOrderRequest, IPayPalConfig, PayPalScriptService } from 'ngx-paypal';
 import { Payment } from '../../models/payment';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -14,7 +15,7 @@ import { environment } from '../../../environments/environment';
   styleUrl: './checkout.component.css'
 })
 export class CheckoutComponent implements OnInit{
-  userId : number = 1; // get from local storage
+  userId : number = 0; 
   apiThumnailUrl = environment.apiUrl + '/products/uploads/';
   cart: Cart | undefined;
   order: Order = {
@@ -38,12 +39,28 @@ export class CheckoutComponent implements OnInit{
     private cartService : CartService, 
     private router : Router , 
     private orderService :OrderService , 
+    private authService : AuthService,
   ){
   } 
 
   ngOnInit(): void {
-    this.loadCart();
-    this.initConfig();
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    this.authService.getUser().subscribe(user => {
+      if (user) {
+        this.userId = user.userId;
+        this.order.userId = this.userId; 
+        this.loadCart();
+        this.initConfig();
+      } else {
+        console.error('User not found');
+        this.router.navigate(['/login']);
+      }
+    });
+
   }
 
   loadCart() {

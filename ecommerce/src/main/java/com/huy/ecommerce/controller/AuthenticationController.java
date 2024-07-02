@@ -3,14 +3,12 @@ package com.huy.ecommerce.controller;
 import com.huy.ecommerce.components.JwtService;
 import com.huy.ecommerce.dtos.AuthRequest;
 import com.huy.ecommerce.dtos.AuthResponse;
+import com.huy.ecommerce.dtos.UserDTO;
 import com.huy.ecommerce.dtos.UserRegistrationDTO;
 import com.huy.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,5 +28,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(authResponse);
     }
 
-    
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        UserDTO userDTO = userService.findByUsername(username);
+        return ResponseEntity.ok(userDTO);
+    }
 }

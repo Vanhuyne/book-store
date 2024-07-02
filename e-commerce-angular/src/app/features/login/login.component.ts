@@ -16,10 +16,7 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router : Router,
-    private notificationService: NotificationService) 
-  {
-
-  }
+    private notificationService: NotificationService) {}
 
   login(){
     this.formSubmitted = true;
@@ -39,13 +36,6 @@ export class LoginComponent {
     
   }
 
-  forgotPassword() {
-    throw new Error('Method not implemented.');
-  }
-  
-  navigateToRegister() {
-      this.router.navigate(['/register']);
-   }
   loginWithGoogle() {
     throw new Error('Method not implemented.');
   }
