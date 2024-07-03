@@ -35,7 +35,7 @@ public class UserService {
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    public User register(UserRegistrationDTO userDTO) {
+    public void register(UserRegistrationDTO userDTO) {
        if (userRepository.existsByUsername(userDTO.getUsername())) {
            throw new ResourceNotFoundException("Username is already taken!");
        }
@@ -57,7 +57,8 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
 
         newUser.setRoles(Set.of(userRole));
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
+
     }
 
     public AuthResponse login(AuthRequest authRequest) {

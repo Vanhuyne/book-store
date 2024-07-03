@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -21,11 +23,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDetails> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request){
-        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining(", "));
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), errorMessage, request.getDescription(false));
+    public ResponseEntity<ErrorDetails> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Validation Error", ex.getBindingResult().toString());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
