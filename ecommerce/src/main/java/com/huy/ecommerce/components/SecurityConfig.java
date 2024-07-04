@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,6 +21,8 @@ public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
+//    private final CustomOAuth2UserService customOAuth2UserService;
+//    private final CustomLoginSuccessHandler customLoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -36,17 +39,27 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-
-                                .requestMatchers(HttpMethod.GET, "/api/cart/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+//                .oauth2Login(oauth2Login ->
+//                        oauth2Login
+//                                .userInfoEndpoint(userInfoEndpoint ->
+//                                        userInfoEndpoint.oidcUserService(oidcUserService())
+//                                )
+//                )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore( jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
+//    @Bean
+//    public OidcUserService oidcUserService() {
+//        OidcUserService oidcUserService = new OidcUserService();
+//        oidcUserService.setOauth2UserService(customOAuth2UserService);
+//        return oidcUserService;
+//    }
 
 }

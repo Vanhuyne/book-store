@@ -72,6 +72,10 @@ public class User implements UserDetails {
     )
     private Set<Role> roles;
 
+    // New fields for OAuth2
+    private String oauth2UserId;
+    private String oauth2Provider;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
@@ -98,4 +102,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

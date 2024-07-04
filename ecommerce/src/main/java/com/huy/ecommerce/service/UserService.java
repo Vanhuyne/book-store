@@ -2,10 +2,7 @@ package com.huy.ecommerce.service;
 
 import com.huy.ecommerce.components.JwtService;
 import com.huy.ecommerce.components.UserDetailsServiceImpl;
-import com.huy.ecommerce.dtos.AuthRequest;
-import com.huy.ecommerce.dtos.AuthResponse;
-import com.huy.ecommerce.dtos.UserDTO;
-import com.huy.ecommerce.dtos.UserRegistrationDTO;
+import com.huy.ecommerce.dtos.*;
 import com.huy.ecommerce.entities.Role;
 import com.huy.ecommerce.entities.User;
 import com.huy.ecommerce.exception.AuthenticationException;
@@ -18,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +30,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
 
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -81,7 +80,7 @@ public class UserService {
 
         return convertToDTO(user);
     }
-
+    
     private UserDTO convertToDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(user.getUserId());

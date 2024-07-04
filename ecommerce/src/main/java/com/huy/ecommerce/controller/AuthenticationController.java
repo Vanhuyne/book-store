@@ -1,9 +1,6 @@
 package com.huy.ecommerce.controller;
 
-import com.huy.ecommerce.dtos.AuthRequest;
-import com.huy.ecommerce.dtos.AuthResponse;
-import com.huy.ecommerce.dtos.UserDTO;
-import com.huy.ecommerce.dtos.UserRegistrationDTO;
+import com.huy.ecommerce.dtos.*;
 import com.huy.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final UserService userService;
 
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -28,13 +26,12 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(errorMessages.toString());
         }
 
-        // Proceed with registration logic if validation passes
         userService.register(userDTO);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws Exception{
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         AuthResponse authResponse = userService.login(authRequest);
         return ResponseEntity.ok(authResponse);
     }
@@ -44,4 +41,6 @@ public class AuthenticationController {
         UserDTO userDTO = userService.findByUsername(username);
         return ResponseEntity.ok(userDTO);
     }
+
+
 }

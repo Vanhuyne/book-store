@@ -31,6 +31,14 @@ export class AuthService {
     })
     );
   }
+  loginWithGoogle(token: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/oauth2/google`, {token}).pipe(
+      tap((response) => {
+        this.setToken(response.token);
+        this.loadUserDetails().subscribe();
+      })
+    )
+  }
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }
