@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
 import { UserRegistrationDTO } from '../models/auth/user-registration-dto';
 import { AuthRequest } from '../models/auth/auth-request';
@@ -30,14 +30,6 @@ export class AuthService {
         this.loadUserDetails().subscribe();
     })
     );
-  }
-  loginWithGoogle(token: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/oauth2/google`, {token}).pipe(
-      tap((response) => {
-        this.setToken(response.token);
-        this.loadUserDetails().subscribe();
-      })
-    )
   }
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
@@ -91,5 +83,14 @@ export class AuthService {
       );
     }
     return new Observable<UserDTO | null>(subscriber => subscriber.next(null));
+  }
+
+  requestPasswordReset(email: string): Observable<any> {
+    let params = new HttpParams().set('email', email);
+    return this.http.post(`${this.baseUrl}/request-password-reset`, {}, { params: params, responseType: 'text' });
+  }
+  
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password?token=${token}`, { newPassword }, { responseType: 'text' });
   }
 }

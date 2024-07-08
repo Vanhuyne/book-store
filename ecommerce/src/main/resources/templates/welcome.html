@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Welcome Email</title>
+
+</head>
+<body>
+<h1>Welcome to our platform!</h1>
+<p th:text="'Dear ' + ${firstName} + ','">Dear User,</p>
+<p>Welcome to our platform! Thank you for registering an account.</p>
+<p>Best regards,</p>
+<p>The Team</p>
+</body>
+</html>

@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -42,5 +44,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<String> requestPasswordReset(@RequestParam String email) {
+        userService.requestPasswordReset(email);
+        return ResponseEntity.ok("Password reset email sent");
+    }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody Map<String, String> request) {
+        String newPassword = request.get("newPassword");
+        userService.resetPassword(token, newPassword);
+        return ResponseEntity.ok("Password has been reset");
+    }
 }

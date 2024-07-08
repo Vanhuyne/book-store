@@ -10,12 +10,12 @@ import { FormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
-import { GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 @NgModule({
   declarations: [
     AppComponent,
-    
+   
   ],
   imports: [
     BrowserModule,
@@ -25,8 +25,8 @@ import { GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from 
     FeaturesModule,
     HttpClientModule,
     SharedModule,
-    ToastrModule.forRoot(),
-    SocialLoginModule,
+    //OAuthModule.forRoot(),
+    ToastrModule.forRoot()
   ],
   providers: [
     {
@@ -34,25 +34,6 @@ import { GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from 
       useClass: AuthInterceptor,
       multi: true,
     },
-    {
-      provide: 'SocialAuthServiceConfig',
-      useValue: {
-        autoLogin: false,
-        providers: [
-          {
-            id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(
-              '1089956828526-h3vtr3aoj4hugn2tvnl404eobru3vpps.apps.googleusercontent.com',{
-              scopes: 'openid profile email'}
-            ),
-          },
-        ],
-        onError: (err) => {
-          console.error(err);
-        },
-      } as SocialAuthServiceConfig,
-    }
-    
   ],
   bootstrap: [AppComponent]
 })

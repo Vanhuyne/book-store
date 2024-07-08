@@ -72,9 +72,8 @@ public class User implements UserDetails {
     )
     private Set<Role> roles;
 
-    // New fields for OAuth2
-    private String oauth2UserId;
-    private String oauth2Provider;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private PasswordResetToken passwordResetToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

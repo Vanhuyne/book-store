@@ -17,7 +17,7 @@ export class AppComponent implements OnInit  {
     initFlowbite();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const noHeaderFooterRoutes = ['/login', '/register'];
+        const noHeaderFooterRoutes = ['/login', '/register' ,'/reset-password', '/request-password-reset'];
         this.showHeaderFooter = !noHeaderFooterRoutes.includes(event.url);
       }
     });

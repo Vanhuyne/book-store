@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../service/notification.service';
-import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -11,18 +10,14 @@ import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/an
 })
 
 export class LoginComponent {
-  socialUser!: SocialUser;
-  public user: SocialUser = new SocialUser();
 
   username : string = '';
   password : string= '';
   formSubmitted: boolean = false; 
   constructor(
     private authService: AuthService,
-    private socialAuthService: SocialAuthService,
     private router : Router,
-    private notificationService: NotificationService,
-    private socialAuth:  SocialAuthService) {}
+    private notificationService: NotificationService) {}
 
   login(){
     this.formSubmitted = true;
@@ -42,13 +37,15 @@ export class LoginComponent {
     
   }
   ngOnInit(): void {
-    this.socialAuth.authState.subscribe((user: SocialUser) => {
-      console.log(user);
-      // Handle user data here
-    });
+    // this.socialAuth.authState.subscribe((user: SocialUser) => {
+    //   console.log(user);
+    //   // Handle user data here
+    // });
   }
 
-  loginWithGoogle(): void {
-    this.socialAuth.signIn(GoogleLoginProvider.PROVIDER_ID);
-  }
+  loginWithGoogle() {
+    console.log('Login with Google');
+    
+    // this.authService.loginWithGoogle();
+}
 }

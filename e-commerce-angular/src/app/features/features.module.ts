@@ -12,6 +12,8 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
+import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 // Auth components
 // import { LoginComponent } from './auth/login/login.component';
@@ -47,7 +49,9 @@ import { OrderConfirmationComponent } from './order-confirmation/order-confirmat
     ProductComponent,
     CartComponent,
     CheckoutComponent,
-    OrderConfirmationComponent
+    OrderConfirmationComponent,
+    RequestPasswordResetComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     CommonModule,

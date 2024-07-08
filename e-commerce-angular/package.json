@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@abacritt/angularx-social-login": "^2.1.0",
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
     "@angular/compiler": "^17.3.0",
@@ -20,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "@auth0/angular-jwt": "^5.2.0",
+    "angular-oauth2-oidc": "^17.0.2",
     "flowbite": "^2.3.0",
     "ngx-paypal": "^11.0.0",
     "ngx-toastr": "^19.0.0",
