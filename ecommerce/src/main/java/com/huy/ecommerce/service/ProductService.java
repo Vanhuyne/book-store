@@ -41,7 +41,7 @@ public class ProductService {
         photoDTO.setProductId(photo.getProduct().getProductId());
         return photoDTO;
     }
-    // convert to DTO
+
     private ProductDTO convertToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setProductId(product.getProductId());
@@ -168,6 +168,5 @@ public class ProductService {
 
         return products.map(this::convertToDTO);
     }
-
 
 }

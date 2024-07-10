@@ -8,6 +8,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
 
 const routes: Routes = [
   { path: '', component: ProductListComponent},
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path :'order-confirmation', component: OrderConfirmationComponent },
   { path: 'request-password-reset', component: RequestPasswordResetComponent },
   { path: 'reset-password', component : ResetPasswordComponent},
+  { path: 'product/:id', component: ProductDetailComponent},
   // Add other feature routes here
 ];
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -15,7 +15,8 @@ export class ResetPasswordComponent implements OnInit{
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private router: Router
   ){}
   ngOnInit(): void {
     this.token = this.route.snapshot.queryParamMap.get('token') || '';  
@@ -25,6 +26,9 @@ export class ResetPasswordComponent implements OnInit{
     this.authService.resetPassword(this.token, this.newPassword).subscribe(
       response => {
         this.toastService.success(response);
+        if(response){
+          this.router.navigate(['/login']);
+        }
       },
       error => {
         this.toastService.error(error.error);

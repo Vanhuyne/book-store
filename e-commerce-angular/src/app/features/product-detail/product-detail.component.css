@@ -1,0 +1,27 @@
+/* src/app/product-detail/product-detail.component.css */
+.container {
+    margin: 0 auto;
+  } 
+  button {
+    transition: background-color 0.3s ease;
+  }
+  
+  .border {
+    border: 1px solid #d1d5db; 
+  } 
+ 
+  
+  
+.square-container {
+  padding-top: 100%; /* Maintain aspect ratio for square */
+  position: relative;
+}
+
+.square-container img {
+  position: absolute;
+  width: 100%;
+  height: fit-content;
+  object-fit: cover;
+  border: 1px solid #e5e7eb; /* Adjust border styles as needed */
+ 
+}

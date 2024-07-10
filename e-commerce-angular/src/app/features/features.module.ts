@@ -14,6 +14,7 @@ import { NgxPayPalModule } from 'ngx-paypal';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
 
 // Auth components
 // import { LoginComponent } from './auth/login/login.component';
@@ -52,6 +53,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     OrderConfirmationComponent,
     RequestPasswordResetComponent,
     ResetPasswordComponent,
+    ProductDetailComponent,
   ],
   imports: [
     CommonModule,

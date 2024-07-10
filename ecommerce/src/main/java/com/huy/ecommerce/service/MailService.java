@@ -50,7 +50,7 @@ public class MailService {
     }
 
     @Async
-    public void sendPasswordResetEmail(String to, String token) {
+    public void sendPasswordResetEmail(String to, String token, String username) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -62,6 +62,7 @@ public class MailService {
             // Create the Thymeleaf context and add variables
             Context context = new Context();
             context.setVariable("resetUrl", "http://localhost:4200/reset-password?token=" + token);
+            context.setVariable("username", username);
 
             // Process the template
             String htmlContent = templateEngine.process("password-reset", context);

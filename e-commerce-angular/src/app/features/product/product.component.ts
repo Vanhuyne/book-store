@@ -13,7 +13,7 @@ export class ProductComponent {
   @Input() product!: Product ;
   @Output() addToCartClicked: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor(private cartService: CartService) {}
+  constructor() {}
 
   addToCart() {
       this.addToCartClicked.emit(this.product.productId);

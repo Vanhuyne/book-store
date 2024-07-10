@@ -116,7 +116,7 @@ public class UserService {
             passwordResetTokenRepository.save(existingToken);
         }
 
-        mailService.sendPasswordResetEmail(user.getEmail(), resetToken);
+        mailService.sendPasswordResetEmail(user.getEmail(), resetToken, user.getUsername());
     }
 
     // reset Password
