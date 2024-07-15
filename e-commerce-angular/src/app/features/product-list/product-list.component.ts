@@ -7,6 +7,7 @@ import { CartService } from '../../service/cart.service';
 import { Category } from '../../models/category';
 import { SharedService } from '../../service/shared.service';
 import { AuthService } from '../../service/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
@@ -17,16 +18,21 @@ export class ProductListComponent implements OnInit{
   products: Product[] = [];
   totalPages: number = 0;
   currentPage: number = 0;
-  pageSize: number = 5;
+  pageSize: number = 8;
   pageNumbers: number[] = [];
   selectedCategory: string | null = null;
   categories: Category[] = [];
+  minPrice: number = 0;
+  maxPrice: number = 1000;
+  minStockQuantity: number = 0;
+  totalResults: number | null = null;
 
   constructor(
     private productService: ProductService , 
     private cartService : CartService,
     private sharedService: SharedService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -44,6 +50,7 @@ export class ProductListComponent implements OnInit{
       this.totalPages = data.totalPages;
       this.currentPage = data.number;
       this.pageNumbers = Array.from({length: this.totalPages}, (_, k) => k);
+      this.totalResults = data.totalElements;
     });
   }
 
@@ -70,6 +77,7 @@ export class ProductListComponent implements OnInit{
       });
     }else {
       console.error('User not logged in. Cannot add product to cart');
+      this.router.navigate(['/login']);
     }
    })
   }
@@ -92,16 +100,31 @@ export class ProductListComponent implements OnInit{
 
   showAllProducts(): void {
     this.selectedCategory = null; 
+    this.minPrice = 0;
+    this.maxPrice = 1000;
     this.loadProducts();
   }
 
   searchProducts(keyword: string, page: number = 0, size: number = this.pageSize): void {
+    this.selectedCategory = null;
+    this.currentPage = 0;
     this.productService.searchProducts(keyword, page, size).subscribe((data: Page<Product>) => {
       this.products = data.content;
       this.totalPages = data.totalPages;
       this.currentPage = data.number;
       this.pageNumbers = Array.from({ length: this.totalPages }, (_, k) => k);
+      this.totalResults = data.totalElements;
     });
   }
 
+  filterProducts(): void {
+    this.productService.filterProducts(this.minPrice, this.maxPrice, this.minStockQuantity, this.currentPage, this.pageSize)
+      .subscribe((data: Page<Product>) => {
+        this.products = data.content;
+        this.totalPages = data.totalPages;
+        this.currentPage = data.number;
+        this.pageNumbers = Array.from({ length: this.totalPages }, (_, k) => k);
+        this.totalResults = data.totalElements;
+      });
+  }
 }

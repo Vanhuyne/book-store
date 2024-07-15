@@ -45,4 +45,13 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/${productId}`);
   }
 
+  filterProducts(minPrice: number, maxPrice: number, minStockQuantity: number, page: number, size: number): Observable<Page<Product>> {
+    let params = new HttpParams()
+      .set('minPrice', minPrice.toString())
+      .set('maxPrice', maxPrice.toString())
+      .set('minStockQuantity', minStockQuantity.toString())
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Page<Product>>(`${this.apiUrl}/filter`, { params });
+  }
 }

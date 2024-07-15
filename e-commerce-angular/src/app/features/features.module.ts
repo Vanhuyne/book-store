@@ -15,23 +15,7 @@ import { OrderConfirmationComponent } from './order-confirmation/order-confirmat
 import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
-
-// Auth components
-// import { LoginComponent } from './auth/login/login.component';
-// import { RegisterComponent } from './auth/register/register.component';
-
-// Books components
-// import { BookListComponent } from './books/book-list/book-list.component';
-// import { BookDetailComponent } from './books/book-detail/book-detail.component';
-
-// Cart component (placeholder)
-// import { CartComponent } from './cart/cart.component';
-
-// Orders component (placeholder)
-// import { OrdersComponent } from './orders/orders.component';
-
-// Profile component (placeholder)
-// import { ProfileComponent } from './profile/profile.component';
+import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 
 @NgModule({
   declarations: [
@@ -54,13 +38,14 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
     RequestPasswordResetComponent,
     ResetPasswordComponent,
     ProductDetailComponent,
+    UserProfileEditComponent,
   ],
   imports: [
     CommonModule,
     FeaturesRoutingModule,
     FormsModule,
     NgxPayPalModule,
-    
+    ReactiveFormsModule
   ],
 })
 export class FeaturesModule {}

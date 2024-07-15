@@ -1,6 +1,7 @@
 package com.huy.ecommerce.controller;
 
 import com.huy.ecommerce.dtos.ProductDTO;
+import com.huy.ecommerce.dtos.ProductFilterDTO;
 import com.huy.ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +40,13 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@Valid ProductDTO productDTO,
+    public ResponseEntity<String> createProduct(@Valid ProductDTO productDTO,
                                                 BindingResult bindingResult,
                                                 @RequestParam("file") MultipartFile file) {
         // Check for validation errors in ProductDTO
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation errors in product data.");
         }
-
         try {
             productService.createProduct(productDTO, file);
             return ResponseEntity.status(HttpStatus.CREATED).body( "Product created successfully.");
@@ -60,7 +60,7 @@ public class ProductController {
     @GetMapping("/uploads/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
-            Path filePath = this.UPLOAD_DIR.resolve(filename).normalize();
+            Path filePath = UPLOAD_DIR.resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
@@ -82,4 +82,11 @@ public class ProductController {
             @RequestParam String keyword) {
         return ResponseEntity.ok(productService.searchProductsByKeyword(keyword, page, size));
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<ProductDTO>> filterProducts(ProductFilterDTO filterDTO) {
+        Page<ProductDTO> products = productService.filterProducts(filterDTO);
+        return ResponseEntity.ok(products);
+    }
+
 }

@@ -7,6 +7,7 @@ import com.huy.ecommerce.entities.PasswordResetToken;
 import com.huy.ecommerce.entities.Role;
 import com.huy.ecommerce.entities.User;
 import com.huy.ecommerce.exception.AuthenticationException;
+import com.huy.ecommerce.exception.ResourceConflictException;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
 import com.huy.ecommerce.repository.PasswordResetTokenRepository;
 import com.huy.ecommerce.repository.RoleRepository;
@@ -16,12 +17,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,7 +148,21 @@ public class UserService {
         user.setPasswordResetToken(null);
         userRepository.save(user);
     }
-    
+
+    public UserDTO getCurrentUser() {
+        String username = getCurrentUsername();
+        return findByUsername(username);
+    }
+
+    private String getCurrentUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
+    }
+
     private UserDTO convertToDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(user.getUserId());
@@ -158,6 +181,67 @@ public class UserService {
                 .collect(Collectors.toSet());
         userDTO.setRoles(roles);
         return userDTO;
+    }
+
+    @Transactional
+    public UserDTO updateProfile(UserDTO userDTO ) {
+        String currentUsername = getCurrentUsername();
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        // Check if username is being changed and if it's already taken
+        if (!user.getUsername().equals(userDTO.getUsername()) &&
+                userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new ResourceConflictException("Username is already taken.");
+        }
+
+        // Check if email is being changed and if it's already in use
+        if (!user.getEmail().equals(userDTO.getEmail()) &&
+                userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new ResourceConflictException("Email is already in use.");
+        }
+        // Update user details (only if provided in the DTO)
+        if (userDTO.getUsername() != null) user.setUsername(userDTO.getUsername());
+        if (userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
+        if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
+        if (userDTO.getLastName() != null) user.setLastName(userDTO.getLastName());
+        if (userDTO.getAddress() != null) user.setAddress(userDTO.getAddress());
+        if (userDTO.getPhone() != null) user.setPhone(userDTO.getPhone());
+        if (userDTO.getProfilePictureUrl() != null) user.setProfilePictureUrl(userDTO.getProfilePictureUrl());
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return convertToDTO(user);
+    }
+
+    public String uploadProfilePicture(MultipartFile file, Long userId) throws IOException {
+        // Handle file
+        String uploadDir = "./uploads/users/";
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        // Generate random file name
+        String originalFilename = file.getOriginalFilename();
+
+        if (originalFilename == null) {
+            throw new IllegalArgumentException("Original filename cannot be null");
+        }
+        String originalFileName = StringUtils.cleanPath(originalFilename);
+
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String randomFileName = UUID.randomUUID().toString() + extension;
+        Path filePath = uploadPath.resolve(randomFileName);
+        Files.copy(file.getInputStream(), filePath);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        user.setProfilePictureUrl(randomFileName);
+
+        userRepository.save(user);
+
+        return randomFileName;
     }
 
 }

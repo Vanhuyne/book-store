@@ -2,6 +2,8 @@ package com.huy.ecommerce.service;
 
 import com.huy.ecommerce.dtos.PhotoDTO;
 import com.huy.ecommerce.dtos.ProductDTO;
+import com.huy.ecommerce.dtos.ProductFilterDTO;
+import com.huy.ecommerce.dtos.ProductSpecification;
 import com.huy.ecommerce.entities.Photo;
 import com.huy.ecommerce.entities.Product;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -165,7 +168,13 @@ public class ProductService {
     public Page<ProductDTO> searchProductsByKeyword(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Product> products = productRepository.searchProductsByKeyword(keyword, pageable);
+        return products.map(this::convertToDTO);
+    }
 
+    public Page<ProductDTO> filterProducts(ProductFilterDTO filterDTO) {
+        Pageable pageable = PageRequest.of(filterDTO.getPage(), filterDTO.getSize());
+        Specification<Product> spec = ProductSpecification.filterByCriteria(filterDTO);
+        Page<Product> products = productRepository.findAll(spec, pageable);
         return products.map(this::convertToDTO);
     }
 

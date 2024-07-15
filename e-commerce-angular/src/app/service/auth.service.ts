@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { UserRegistrationDTO } from '../models/auth/user-registration-dto';
 import { AuthRequest } from '../models/auth/auth-request';
 import { AuthResponse } from '../models/auth/auth-response';
@@ -19,7 +19,7 @@ export class AuthService {
   private userSubject = new BehaviorSubject<UserDTO | null>(null);
   constructor(private http: HttpClient) { }
 
-  register (user: UserRegistrationDTO) : Observable<any> {
+  register(user: UserRegistrationDTO): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, user);
   }
 
@@ -28,9 +28,10 @@ export class AuthService {
       tap((response) => {
         this.setToken(response.token);
         this.loadUserDetails().subscribe();
-    })
+      })
     );
   }
+
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }
@@ -41,14 +42,15 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    this.clearUser();
   }
 
-  getUsernameFromToken(): string | null{
+  getUsernameFromToken(): string | null {
     const token = this.getToken();
     if (token) {
       const decodedToken = this.jwtHelper.decodeToken(token);
       console.log(decodedToken);
-      
+
       return decodedToken ? decodedToken.sub : null;
     }
     return null;
@@ -61,9 +63,10 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = this.getToken();
     return token != null && !this.jwtHelper.isTokenExpired(token);
+
   }
 
-  setUser(user: UserDTO ): void {
+  setUser(user: UserDTO): void {
     this.userSubject.next(user);
   }
 
@@ -89,8 +92,29 @@ export class AuthService {
     let params = new HttpParams().set('email', email);
     return this.http.post(`${this.baseUrl}/request-password-reset`, {}, { params: params, responseType: 'text' });
   }
-  
+
   resetPassword(token: string, newPassword: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/reset-password?token=${token}`, { newPassword }, { responseType: 'text' });
   }
+
+  getCurrentUser(): Observable<UserDTO | null> {
+    return this.http.get<UserDTO>(`${this.baseUrl}/profile`);
+  }
+
+  updateProfile(userDTO: UserDTO): Observable<UserDTO> {
+    return this.http.put<UserDTO>(`${this.baseUrl}/profile`, userDTO);
+  }
+
+  updateProfilePicture(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.getToken()}`
+    });
+    return this.http.put(`${this.baseUrl}/profile-picture`, formData, { headers, responseType: 'text' });
+  }
+
+  
+
 }

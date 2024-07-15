@@ -9,6 +9,7 @@ import { OrderConfirmationComponent } from './order-confirmation/order-confirmat
 import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 
 const routes: Routes = [
   { path: '', component: ProductListComponent},
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'request-password-reset', component: RequestPasswordResetComponent },
   { path: 'reset-password', component : ResetPasswordComponent},
   { path: 'product/:id', component: ProductDetailComponent},
+  { path: 'profile', component: UserProfileEditComponent }
   // Add other feature routes here
 ];
 

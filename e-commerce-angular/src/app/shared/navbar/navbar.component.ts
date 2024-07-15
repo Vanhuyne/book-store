@@ -4,6 +4,8 @@ import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { CartService } from '../../service/cart.service';
+import { environment } from '../../../environments/environment';
+import { UserDTO } from '../../models/auth/user-dto';
 
 
 @Component({
@@ -16,6 +18,8 @@ export class NavbarComponent implements OnInit {
   username: string | null = null;
   isDropdownOpen: boolean = false;
   cartItemCount: number = 0;
+  profilePictureUrl = environment.apiUrl + '/auth/uploads/' ;
+  user! : UserDTO ;
 
   constructor(
     private sharedService: SharedService,
@@ -25,22 +29,22 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUsername();
     this.loadCartItemCount();
-
-    console.log(this.cartItemCount);
-    
-
+    this.getUsername();
     this.cartService.getCartCount().subscribe((count) => {
-      this.cartItemCount = count;  // Update the cart item count
-
-      console.log('Cart item count: ', this.cartItemCount);
-      
+      this.cartItemCount = count;  // Update the cart item count      
     });
+    
   }
 
   getUsername(): void {
-    this.username = this.authService.getUsernameFromToken();
+    this.authService.getUser().subscribe((user) => {
+      if (user) {
+        this.username = user.username;
+        this.user = user;
+        
+      }
+    });
   }
 
   searchProducts(event: Event): void {
@@ -52,6 +56,7 @@ export class NavbarComponent implements OnInit {
     this.authService.logout();
     this.authService.clearUser();
     this.username = null;
+    this.router.navigate(['/login']);
   }
 
   loadCartItemCount(): void {
