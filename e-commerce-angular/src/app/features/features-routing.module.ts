@@ -10,6 +10,7 @@ import { RequestPasswordResetComponent } from './request-password-reset/request-
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
+import { OrderDetailComponent } from './order-detail/order-detail.component';
 
 const routes: Routes = [
   { path: '', component: ProductListComponent},
@@ -21,8 +22,8 @@ const routes: Routes = [
   { path: 'request-password-reset', component: RequestPasswordResetComponent },
   { path: 'reset-password', component : ResetPasswordComponent},
   { path: 'product/:id', component: ProductDetailComponent},
-  { path: 'profile', component: UserProfileEditComponent }
-  // Add other feature routes here
+  { path: 'profile', component: UserProfileEditComponent },
+  { path: 'order-detail', component: OrderDetailComponent },
 ];
 
 @NgModule({

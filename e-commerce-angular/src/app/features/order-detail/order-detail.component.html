@@ -1,0 +1,84 @@
+<div class="container mx-auto max-w-4xl p-4 bg-white rounded border border-gray-400">
+  <div *ngIf="order" class="invoice ">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-2xl font-bold">INVOICE</h1>
+        <p class="text-gray-600">Order #{{ order.userId }}-{{ generateOrderNumber() }}</p>
+      </div>
+      <div class="text-right">
+        <p class="font-bold">Your Company Name</p>
+        <p>123 Company Street</p>
+        <p>City, State 12345</p>
+      </div>
+    </div>
+
+    <!-- Customer Info and Order Summary -->
+    <div class="flex justify-between mb-8">
+      <div>
+        <h2 class="text-xl font-semibold mb-2">Bill To:</h2>
+        <p>{{ order.shippingName }}</p>
+        <p>{{ order.shippingAddress }}</p>
+        <p>{{ order.shippingCity }}, {{ order.shippingPostalCode }}</p>
+      </div>
+      <div class="text-right">
+        <p><strong>Order Date:</strong> {{ getCurrentDate() }}</p>
+        <p><strong>Payment Method:</strong> {{ order.payment.paymentMethod }}</p>
+        <p><strong>Order Status:</strong> {{ order.status }}</p>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <table class="w-full mb-8">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="py-2 px-4 text-left">Item</th>
+          <th class="py-2 px-4 text-right">Quantity</th>
+          <th class="py-2 px-4 text-right">Price</th>
+          <th class="py-2 px-4 text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of order.orderItems" class="border-b">
+          <td class="py-2 px-4">{{ item.productName }}</td>
+          <td class="py-2 px-4 text-right">{{ item.quantity }}</td>
+          <td class="py-2 px-4 text-right">{{ item.productPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td class="py-2 px-4 text-right">{{ item.quantity * item.productPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Order Total -->
+    <div class="flex justify-end">
+      <div class="w-1/2">
+        <div class="flex justify-between py-2">
+          <span>Subtotal:</span>
+          <span>{{ order.subtotal | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="flex justify-between py-2">
+          <span>Tax:</span>
+          <span>{{ order.tax | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="flex justify-between py-2 font-bold">
+          <span>Total:</span>
+          <span>{{ order.total | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-8 text-center text-gray-600">
+      <p>Thank you for your business!</p>
+    </div>
+  </div>
+
+  <div *ngIf="!order" class="text-center text-gray-600">
+    Loading order details...
+  </div>
+
+  <div class="mt-8 text-center">
+    <button (click)="goBack()" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+      Back to continute shopping
+    </button>
+  </div>
+</div>

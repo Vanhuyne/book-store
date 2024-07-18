@@ -21,7 +21,8 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "types": ["google-one-tap"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

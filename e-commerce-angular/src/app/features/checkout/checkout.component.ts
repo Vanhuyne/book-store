@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CartService } from '../../service/cart.service';
 import { Router } from '@angular/router';
 import { OrderService } from '../../service/order.service';
@@ -8,6 +8,7 @@ import { ICreateOrderRequest, IPayPalConfig, PayPalScriptService } from 'ngx-pay
 import { Payment } from '../../models/payment';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../service/auth.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-checkout',
@@ -15,6 +16,7 @@ import { AuthService } from '../../service/auth.service';
   styleUrl: './checkout.component.css'
 })
 export class CheckoutComponent implements OnInit{
+  @ViewChild('checkoutForm') checkoutForm!: NgForm;
   userId : number = 0; 
   apiThumnailUrl = environment.apiUrl + '/products/uploads/';
   cart: Cart | undefined;
@@ -34,6 +36,7 @@ export class CheckoutComponent implements OnInit{
   public payPalConfig?: IPayPalConfig;
   // paypalButtonDisabled: boolean = true;
   paymentMethod:string = 'payAfterDelivery';
+  formSubmitted: boolean = false;
 
   constructor(
     private cartService : CartService, 
@@ -76,7 +79,7 @@ export class CheckoutComponent implements OnInit{
   calculateOrderSummary() {
     if (this.cart) {
       this.order.subtotal = this.cart.cartItems.reduce(
-        (total, item) => total + item.productPrice * item.quantity,
+        (total, item) => parseFloat((total + item.productPrice * item.quantity).toFixed(2)),
         0
       );
       this.order.tax = parseFloat((this.order.subtotal * 0.1).toFixed(2)); // Calculate tax and format to 2 decimal places
@@ -180,6 +183,11 @@ export class CheckoutComponent implements OnInit{
   }
 
   submitOrder() {
+    this.formSubmitted = true;
+    
+    if (this.checkoutForm.invalid) {
+      return;
+    }
     if (this.paymentMethod === 'payAfterDelivery') {
       this.order.payment = {
         paymentMethod: 'Pay After Delivery',
@@ -204,4 +212,8 @@ export class CheckoutComponent implements OnInit{
     });
   }
   
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.checkoutForm?.form.get(fieldName);
+    return (field?.invalid && (field.dirty || field.touched)) || (this.formSubmitted && field?.invalid) || false;
+  }
 }

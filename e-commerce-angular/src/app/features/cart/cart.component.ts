@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { CartItem } from '../../models/cart-item';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cart',
@@ -21,7 +22,8 @@ export class CartComponent implements OnInit{
   constructor(
     private cartService : CartService, 
     private router : Router,
-    private authService : AuthService){}
+    private authService : AuthService,
+    private toastr : ToastrService){}
 
   ngOnInit(): void {
     if (!this.authService.isLoggedIn()) {
@@ -44,7 +46,6 @@ export class CartComponent implements OnInit{
     this.cartService.getCart(this.userId).subscribe({
       next: cart => {
         this.cart = cart;
-        console.log('Cart loaded: ', this.cart); 
       },
       error: err => console.log(err),
       complete: () => {
@@ -81,7 +82,11 @@ export class CartComponent implements OnInit{
   }
 
   proceedToCheckout() {
-    this.router.navigate(['/checkout']);
+    if (!this.cart || this.cart.cartItems.length === 0) {
+      this.toastr.error('Your cart is empty. Please add some items to proceed to checkout.');
+    }else{
+      this.router.navigate(['/checkout']);
+    }
   }
  
   increaseQuantity(cartItem: CartItem): void {

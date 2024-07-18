@@ -16,18 +16,11 @@ import { RequestPasswordResetComponent } from './request-password-reset/request-
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
+import { OrderDetailComponent } from './order-detail/order-detail.component';
+import { GoogleSigninButtonModule, SocialLoginModule } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
-    // Auth components
-    
-    // Books components
-    // BookListComponent,
-    // BookDetailComponent,
-    // Other feature components
-    // OrdersComponent,
-    // ProfileComponent,
-  
     LoginComponent,
     RegisterComponent,
     ProductListComponent,
@@ -39,13 +32,16 @@ import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.
     ResetPasswordComponent,
     ProductDetailComponent,
     UserProfileEditComponent,
+    OrderDetailComponent,
+    
   ],
   imports: [
     CommonModule,
     FeaturesRoutingModule,
     FormsModule,
     NgxPayPalModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GoogleSigninButtonModule,
   ],
 })
 export class FeaturesModule {}

@@ -115,6 +115,9 @@ export class AuthService {
     return this.http.put(`${this.baseUrl}/profile-picture`, formData, { headers, responseType: 'text' });
   }
 
+  loginWithGoogle(user: any) {
+    return this.http.post<any>('/api/auth/google', { user });
+  }
   
 
 }

@@ -2,7 +2,7 @@
 <div class="container mx-auto max-w-7xl ">
   <div class="flex">
     <!-- Filter Sidebar -->
-    <div class="w-1/4 p-4 bg-gray-100 rounded mt-24">
+    <div class="w-1/4 p-4 bg-gray-100 rounded">
       <h3 class="text-xl font-bold mb-4">Filters</h3>
       <div class="mb-4">
         <label class="block text-gray-700">Min Price</label>
@@ -24,7 +24,7 @@
     <!-- Main Content -->
     <div class="w-3/4 pl-4">
       <!-- Category Buttons -->
-      <div class="flex flex-wrap justify-center mb-4 space-x-2 mt-24">
+      <div class="flex flex-wrap justify-center mb-4 space-x-2">
         <button (click)="showAllProducts()" [ngClass]="{
           'bg-blue-500 text-white': !selectedCategory,
           'bg-gray-200 text-gray-700': selectedCategory

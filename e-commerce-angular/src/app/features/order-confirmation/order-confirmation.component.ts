@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Order } from '../../models/order';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order-confirmation',
@@ -9,11 +9,19 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OrderConfirmationComponent implements OnInit {
   order: Order | undefined;
-  constructor(private route : ActivatedRoute) { }
+  constructor(private router : Router) { }
 
   ngOnInit(): void {
-    // Retrieve order details from navigation state
     this.order = history.state.order;
-    console.log('Order confirmation details:', this.order);
+  }
+
+  goToOrderDetails(): void {
+    if (this.order) {
+      this.router.navigate(['/order-detail'], { state: { order: this.order } });
+    }
+  }
+
+  continueShopping(): void {
+    this.router.navigate(['/']);
   }
 }

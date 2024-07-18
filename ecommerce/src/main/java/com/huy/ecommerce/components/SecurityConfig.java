@@ -42,6 +42,11 @@ public class SecurityConfig {
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .anyRequest().authenticated()
                 )
+                .oauth2Login(
+                        oauth2Login -> oauth2Login
+                                .defaultSuccessUrl("/home", true)
+                                .loginPage("/api/auth/login")
+                )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

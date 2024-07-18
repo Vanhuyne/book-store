@@ -11,7 +11,6 @@ public class ProductSpecification {
     public static Specification<Product> filterByCriteria(ProductFilterDTO filterDTO) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-
             if (filterDTO.getMinPrice() != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), filterDTO.getMinPrice()));
             }
@@ -21,7 +20,6 @@ public class ProductSpecification {
             if (filterDTO.getMinStockQuantity() != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("stockQuantity"), filterDTO.getMinStockQuantity()));
             }
-
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

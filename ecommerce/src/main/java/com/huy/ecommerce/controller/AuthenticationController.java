@@ -124,6 +124,13 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> body) {
+        String token = body.get("token");
+        // Verify the token and authenticate the user
+        // You can use Google's token verification API or a library to verify the token
+        return ResponseEntity.ok().build();
+    }
 }
 
 

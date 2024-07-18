@@ -13,45 +13,58 @@ export class ProductService {
 
   private apiUrl = environment.apiUrl + '/products';
   private categoryUrl  = environment.apiUrl + '/categories';
-
+  private productsSubject = new Subject<Page<Product>>();
+  public products$ = this.productsSubject.asObservable();
 
   constructor(private http : HttpClient) { 
   }
 
-  getAllProducts(page : number , size : number, category? : string): Observable<Page<Product>>{
+  getAllProducts(page: number, size: number, category?: string): Observable<Page<Product>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-      if(category){
-        params = params.set('category', category);
-      }
-      return this.http.get<Page<Product>>(this.apiUrl, { params });
+    if (category) {
+      params = params.set('category', category);
+    }
+    const request = this.http.get<Page<Product>>(this.apiUrl, { params });
+    request.subscribe(products => this.productsSubject.next(products));
+    return request;
   }
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.categoryUrl);
   }
 
-  searchProducts(keyword: string ,page: number, size: number): Observable<Page<Product>> {
+  searchProducts(keyword: string, page: number, size: number): Observable<Page<Product>> {
     let params = new HttpParams()
       .set('keyword', keyword)
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<Page<Product>>(`${this.apiUrl}/search`, { params });
+    const request = this.http.get<Page<Product>>(`${this.apiUrl}/search`, { params });
+    request.subscribe(products => this.productsSubject.next(products));
+    return request;
   }
 
   getProductById(productId: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${productId}`);
   }
 
-  filterProducts(minPrice: number, maxPrice: number, minStockQuantity: number, page: number, size: number): Observable<Page<Product>> {
+  filterProducts(minPrice: number, maxPrice: number, minStockQuantity: number, page: number, size: number):Observable<Page<Product>> {
     let params = new HttpParams()
       .set('minPrice', minPrice.toString())
       .set('maxPrice', maxPrice.toString())
       .set('minStockQuantity', minStockQuantity.toString())
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<Page<Product>>(`${this.apiUrl}/filter`, { params });
+
+    const request = this.http.get<Page<Product>>(`${this.apiUrl}/filter`, { params });
+    request.subscribe(products => this.productsSubject.next(products));
+    return request;
   }
+
+
+
+
+
 }
