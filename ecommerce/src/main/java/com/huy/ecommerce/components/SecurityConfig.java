@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -34,18 +35,13 @@ public class SecurityConfig {
                                 .requestMatchers( "/api/orders/**").permitAll()
                                 .requestMatchers(  "/api/cart/**").permitAll()
 
-                                .requestMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/auth/request-password-reset").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/auth/request-password-reset").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .anyRequest().authenticated()
-                )
-                .oauth2Login(
-                        oauth2Login -> oauth2Login
-                                .defaultSuccessUrl("/home", true)
-                                .loginPage("/api/auth/login")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

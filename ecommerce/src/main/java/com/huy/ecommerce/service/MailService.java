@@ -76,4 +76,30 @@ public class MailService {
             throw new MailSendException("Error sending password reset email to " + to);
         }
     }
+
+    @Async
+    public void sendGoogleUserCredentials(String to, String username, String password) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setSubject("Your Account Credentials");
+
+            Context context = new Context();
+            context.setVariable("username", username);
+            context.setVariable("password", password);
+
+            String htmlContent = templateEngine.process("google-user-credentials", context);
+
+            mimeMessageHelper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new MailSendException("Error sending credentials email to " + to);
+        }
+    }
 }

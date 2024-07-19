@@ -1,15 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Welcome Email</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header, .footer {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px 0;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome to our platform!</h1>
-<p th:text="'Dear ' + ${firstName} + ','">Dear User,</p>
-<p>Welcome to our platform! Thank you for registering an account.</p>
-<p>Best regards,</p>
-<p>The Team</p>
+<div class="header">
+    <h1>Welcome to Our Platform</h1>
+</div>
+
+<div class="content">
+    <p>Dear <span th:text="${username}">User</span>,</p>
+
+    <p>Welcome to our platform! Thank you for registering an account.</p>
+
+    <p>We're excited to have you on board and look forward to providing you with a great experience. If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+
+    <p>Best regards,<br>The Team</p>
+</div>
+
+<div class="footer">
+    <p>© 2024 Your Company Name. All rights reserved.</p>
+    <p>This is an automated message, please do not reply to this email.</p>
+</div>
 </body>
 </html>

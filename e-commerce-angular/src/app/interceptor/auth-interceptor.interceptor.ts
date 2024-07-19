@@ -14,12 +14,12 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(
-    request: HttpRequest<any>,
+    request: HttpRequest<unknown>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<unknown>> {
     // Add JWT token to the request header
     const token = this.authService.getToken();
-    console.log('Token: ', token);
+    
     
     if (token) {
       request = request.clone({

@@ -17,7 +17,6 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
-import { GoogleSigninButtonModule, SocialLoginModule } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -41,7 +40,7 @@ import { GoogleSigninButtonModule, SocialLoginModule } from '@abacritt/angularx-
     FormsModule,
     NgxPayPalModule,
     ReactiveFormsModule,
-    GoogleSigninButtonModule,
+    
   ],
 })
 export class FeaturesModule {}

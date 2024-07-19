@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, from, map, Observable, switchMap, tap } from 'rxjs';
 import { UserRegistrationDTO } from '../models/auth/user-registration-dto';
 import { AuthRequest } from '../models/auth/auth-request';
 import { AuthResponse } from '../models/auth/auth-response';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserDTO } from '../models/auth/user-dto';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import firebase from 'firebase/compat/app';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,9 @@ export class AuthService {
 
   private jwtHelper = new JwtHelperService();
   private userSubject = new BehaviorSubject<UserDTO | null>(null);
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient, 
+    private afAuth: AngularFireAuth) { }
 
   register(user: UserRegistrationDTO): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, user);
@@ -115,8 +119,28 @@ export class AuthService {
     return this.http.put(`${this.baseUrl}/profile-picture`, formData, { headers, responseType: 'text' });
   }
 
-  loginWithGoogle(user: any) {
-    return this.http.post<any>('/api/auth/google', { user });
+  loginWithGoogle(): Observable<AuthResponse> {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    return from(this.afAuth.signInWithPopup(provider)).pipe(
+      switchMap((result) => {
+        console.log("result", result);
+        
+        const user = result.user;
+        if (!user) {
+          throw new Error('No user data available');
+        }
+        // Get the ID token
+        return from(user.getIdToken());
+      }),
+      switchMap((idToken) => {
+        // Send the ID token to your backend
+        return this.http.post<AuthResponse>(`${this.baseUrl}/google-login`, { idToken });
+      }),
+      tap((response) => {
+        this.setToken(response.token);
+        this.loadUserDetails().subscribe();
+      })
+    );
   }
   
 
