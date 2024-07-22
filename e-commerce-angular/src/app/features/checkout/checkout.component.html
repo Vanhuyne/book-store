@@ -1,119 +1,98 @@
-<div class="p-4 max-w-7xl mx-auto bg-white shadow-md space-y-4 container">
-  <h2 class=" font-bold text-gray-800">
-    <a [routerLink]="['/cart']" class="flex items-center hover:underline">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-      </svg>
-      Back to Cart
-    </a>
-  </h2>
-  
-  <form #checkoutForm="ngForm" (ngSubmit)="submitOrder()">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Shipping Information -->
-      <div>
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">Shipping Information</h3>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-gray-700 p-2">Receiver</label>
-            <input type="text" [(ngModel)]="order.shippingName" name="shippingName" required 
-                   class="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                   [ngClass]="{'border-red-500': isFieldInvalid('shippingName')}" />
-            <p *ngIf="isFieldInvalid('shippingName')" class="text-red-500 text-sm mt-1">Receiver name is required</p>
+<form #checkoutForm="ngForm" (ngSubmit)="submitOrder()" class="p-4 max-w-7xl mx-auto bg-white shadow-md space-y-4 container">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">Checkout</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Shipping Information -->
+    <div>
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Shipping Information</h3>
+      <div class="space-y-4">
+        <div>
+          <label for="shippingName" class="block text-sm font-medium text-gray-700">Receiver</label>
+          <input type="text" id="shippingName" name="shippingName" [(ngModel)]="order.shippingName" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <div *ngIf="isFieldInvalid('shippingName')" class="text-red-500 text-sm mt-1">
+            Receiver name is required
           </div>
-          <div>
-            <label class="block text-gray-700 p-2">Address</label>
-            <input type="text" [(ngModel)]="order.shippingAddress" name="shippingAddress" required 
-                   class="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   [ngClass]="{'border-red-500': isFieldInvalid('shippingAddress')}" />
-            <p *ngIf="isFieldInvalid('shippingAddress')" class="text-red-500 text-sm mt-1">Address is required</p>
+        </div>
+
+        <div>
+          <label for="shippingAddress" class="block text-sm font-medium text-gray-700">Address</label>
+          <input type="text" id="shippingAddress" name="shippingAddress" [(ngModel)]="order.shippingAddress" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <div *ngIf="isFieldInvalid('shippingAddress')" class="text-red-500 text-sm mt-1">
+            Address is required
           </div>
-          <div>
-            <label class="block text-gray-700 p-2">City</label>
-            <input type="text" [(ngModel)]="order.shippingCity" name="shippingCity" required 
-                   class="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   [ngClass]="{'border-red-500': isFieldInvalid('shippingCity')}" />
-            <p *ngIf="isFieldInvalid('shippingCity')" class="text-red-500 text-sm mt-1">City is required</p>
+        </div>
+
+        <div>
+          <label for="shippingCity" class="block text-sm font-medium text-gray-700">City</label>
+          <input type="text" id="shippingCity" name="shippingCity" [(ngModel)]="order.shippingCity" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <div *ngIf="isFieldInvalid('shippingCity')" class="text-red-500 text-sm mt-1">
+            City is required
           </div>
-          <div>
-            <label class="block text-gray-700 p-2">Postal Code</label>
-            <input type="text" [(ngModel)]="order.shippingPostalCode" name="shippingPostalCode" required 
-                   class="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   [ngClass]="{'border-red-500': isFieldInvalid('shippingPostalCode')}" />
-            <p *ngIf="isFieldInvalid('shippingPostalCode')" class="text-red-500 text-sm mt-1">Postal code is required</p>
+        </div>
+
+        <div>
+          <label for="shippingPostalCode" class="block text-sm font-medium text-gray-700">Postal Code</label>
+          <input type="text" id="shippingPostalCode" name="shippingPostalCode" [(ngModel)]="order.shippingPostalCode" required
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <div *ngIf="isFieldInvalid('shippingPostalCode')" class="text-red-500 text-sm mt-1">
+            Postal code is required
           </div>
         </div>
       </div>
-      <!-- Order Summary -->
-      <div class="bg-white p-6 shadow-md border border-gray-300">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">Order Summary</h3>
-        <div class="space-y-2">
-          <!-- Header Row for Order Summary -->
-          <div class="flex justify-between font-bold border-b pb-2">
-            <div class="w-1/2">
-              <p class="text-lg text-gray-700">Item</p>
-            </div>
-            <div class="w-1/4 text-center">
-              <p class="text-lg text-gray-700">Quantity</p>
-            </div>
-            <div class="w-1/4 text-right">
-              <p class="text-lg text-gray-700">Price</p>
-            </div>
-          </div>
-          <!-- Display Cart Items -->
-          <div *ngFor="let item of order.orderItems" class="flex justify-between items-center border-b py-2">
-            <div class="w-1/2 flex items-center">
-              <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}" class="w-12 h-12 mr-4">
-              <p class="text-lg text-gray-700">{{ item.productName }}</p>
-            </div>
-            <div class="w-1/4 text-center">
-              <p class="text-sm text-gray-500">{{ item.quantity }}</p>
-            </div>
-            <div class="w-1/4 text-right">
-              <p class="text-lg text-gray-700">{{ item.productPrice * item.quantity | currency :'USD': 'symbol': '1.2-2'}}</p>
-            </div>
-          </div>
-          <!-- Display Subtotal, Tax, and Total -->
-          <div class="space-y-4 pt-6 ">
-            <div class="flex justify-between">
-              <p class="text-lg text-gray-700 font-bold">Subtotal</p>
-              <p class="text-lg text-gray-700">{{ order.subtotal | currency:'USD':'symbol':'1.2-2' }}</p>
-            </div>
-            <div class="flex justify-between pt-2">
-              <p class="text-lg text-gray-700 font-bold">Tax</p>
-              <p class="text-lg text-gray-700">{{ order.tax | currency:'USD':'symbol':'1.2-2' }}</p>
-            </div>
-            <div class="flex justify-between items-center font-bold bg-gray-100 border-t border-gray-300 p-4 mt-4">
-              <p class="text-lg text-gray-800">Total</p>
-              <p class="text-lg text-gray-800">{{ order.total | currency:'USD':'symbol':'1.2-2' }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-    <!-- Payment Method Selection and PayPal Button -->
-    <div class="md:w-1/2 pe-4">
+
       <div class="mt-4">
-        <label class="block text-gray-700">Payment Method</label>
-        <select [(ngModel)]="paymentMethod" name="paymentMethod" (change)="onPaymentMethodChange($event)" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
-          <option value="paypal">PayPal</option>
+        <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Payment Method</label>
+        <select id="paymentMethod" name="paymentMethod" [(ngModel)]="paymentMethod" (change)="onPaymentMethodChange($event)"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+          <option value="stripe">Stripe</option>
           <option value="payAfterDelivery">Pay After Delivery</option>
         </select>
       </div>
-      <!-- PayPal Button -->
-      <div *ngIf="paymentMethod === 'paypal'" class="pt-4">
-        <ngx-paypal [config]="payPalConfig"></ngx-paypal>
-      </div>
-      <!-- Submit Button for Pay After Delivery -->
-      <div *ngIf="paymentMethod === 'payAfterDelivery'" class="pt-4">
-        <button type="submit" 
-                [disabled]="checkoutForm.invalid"
-                class="w-full px-4 py-2 bg-blue-700 hover:bg-blue-900 text-white font-bold disabled:bg-gray-400 disabled:cursor-not-allowed">
-          Place Order
-        </button>
+
+      <div *ngIf="paymentMethod === 'stripe'" class="mt-4">
+        <ngx-stripe-card [options]="cardOptions"></ngx-stripe-card>
       </div>
     </div>
-  </form>
-</div>
+
+    <!-- Order Summary -->
+    <div class="bg-white p-6 shadow-md border border-gray-300">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h3>
+      <div class="space-y-2">
+        <div class="flex justify-between font-bold border-b pb-2">
+          <span class="w-1/2">Item</span>
+          <span class="w-1/4 text-center">Quantity</span>
+          <span class="w-1/4 text-right">Price</span>
+        </div>
+        <div *ngFor="let item of order.orderItems" class="flex justify-between items-center border-b py-2">
+          <span class="w-1/2 flex items-center">{{ item.productName }}</span>
+          <span class="w-1/4 text-center">{{ item.quantity }}</span>
+          <span class="w-1/4 text-right">{{ item.productPrice * item.quantity | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="space-y-4 pt-6">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>{{ order.subtotal | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between pt-2">
+            <span>Tax</span>
+            <span>{{ order.tax | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center font-bold bg-gray-100 border-t border-gray-300 p-4 mt-4">
+            <span>Total</span>
+            <span>{{ order.total | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <button type="submit" [disabled]="isProcessing"
+            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+      {{ isProcessing ? 'Processing...' : 'Place Order' }}
+    </button>
+  </div>
+</form>

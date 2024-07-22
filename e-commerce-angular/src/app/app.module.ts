@@ -13,6 +13,7 @@ import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
 import { AngularFireModule } from "@angular/fire/compat";
 import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 import { environment } from '../environments/environment';
+import { NgxStripeModule } from 'ngx-stripe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,7 @@ import { environment } from '../environments/environment';
     HttpClientModule,
     SharedModule,
     ToastrModule.forRoot(),
-    
+    NgxStripeModule.forRoot('pk_test_51Pf0vfGcaw8n2DuFdvgmR0rnP2dmtGX5V2Nty84PD6hbkYLrQCa1UZwRa7nGnzrPVF9rRB1fPPZiu7ESHbw8uRLm0036gVT8a6')
   ],
   providers: [
     {

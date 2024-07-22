@@ -1,24 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CartService } from '../../service/cart.service';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OrderService } from '../../service/order.service';
+import { StripeCardComponent, StripeService } from 'ngx-stripe';
+import { StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
+
 import { Cart } from '../../models/cart';
 import { Order } from '../../models/order';
-import { ICreateOrderRequest, IPayPalConfig, PayPalScriptService } from 'ngx-paypal';
 import { Payment } from '../../models/payment';
-import { environment } from '../../../environments/environment';
+import { CartService } from '../../service/cart.service';
+import { OrderService } from '../../service/order.service';
 import { AuthService } from '../../service/auth.service';
-import { NgForm } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrl: './checkout.component.css'
+  styleUrls: ['./checkout.component.css']
 })
-export class CheckoutComponent implements OnInit{
+export class CheckoutComponent implements OnInit {
   @ViewChild('checkoutForm') checkoutForm!: NgForm;
-  userId : number = 0; 
-  apiThumnailUrl = environment.apiUrl + '/products/uploads/';
+  @ViewChild(StripeCardComponent) card!: StripeCardComponent;
+
+  userId: number = 0;
   cart: Cart | undefined;
   order: Order = {
     userId: this.userId,
@@ -31,20 +34,39 @@ export class CheckoutComponent implements OnInit{
     total: 0,
     status: 'Pending',
     orderItems: [],
-    payment:{} as Payment
+    payment: {} as Payment
   };
-  public payPalConfig?: IPayPalConfig;
-  // paypalButtonDisabled: boolean = true;
-  paymentMethod:string = 'payAfterDelivery';
+  paymentMethod: string = 'payAfterDelivery';
   formSubmitted: boolean = false;
+  isProcessing: boolean = false;
+
+  cardOptions: StripeCardElementOptions = {
+    style: {
+      base: {
+        iconColor: '#666EE8',
+        color: '#31325F',
+        fontWeight: '300',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSize: '18px',
+        '::placeholder': {
+          color: '#CFD7E0'
+        }
+      }
+    }
+  };
+
+  elementsOptions: StripeElementsOptions = {
+    locale: 'en'
+  };
 
   constructor(
-    private cartService : CartService, 
-    private router : Router , 
-    private orderService :OrderService , 
-    private authService : AuthService,
-  ){
-  } 
+    private cartService: CartService,
+    private router: Router,
+    private orderService: OrderService,
+    private authService: AuthService,
+    private stripeService: StripeService,
+    private http : HttpClient
+  ) { }
 
   ngOnInit(): void {
     if (!this.authService.isLoggedIn()) {
@@ -55,15 +77,13 @@ export class CheckoutComponent implements OnInit{
     this.authService.getUser().subscribe(user => {
       if (user) {
         this.userId = user.userId;
-        this.order.userId = this.userId; 
+        this.order.userId = this.userId;
         this.loadCart();
-        this.initConfig();
       } else {
         console.error('User not found');
         this.router.navigate(['/login']);
       }
     });
-
   }
 
   loadCart() {
@@ -72,7 +92,7 @@ export class CheckoutComponent implements OnInit{
         this.cart = cart;
         this.calculateOrderSummary();
       },
-      error: err => console.log(err)
+      error: err => console.error('Error loading cart:', err)
     });
   }
 
@@ -82,99 +102,15 @@ export class CheckoutComponent implements OnInit{
         (total, item) => parseFloat((total + item.productPrice * item.quantity).toFixed(2)),
         0
       );
-      this.order.tax = parseFloat((this.order.subtotal * 0.1).toFixed(2)); // Calculate tax and format to 2 decimal places
-      this.order.total = parseFloat((this.order.subtotal + this.order.tax).toFixed(2)); 
-      this.order.orderItems = this.cart.cartItems.map((item: any) => ({
+      this.order.tax = parseFloat((this.order.subtotal * 0.1).toFixed(2));
+      this.order.total = parseFloat((this.order.subtotal + this.order.tax).toFixed(2));
+      this.order.orderItems = this.cart.cartItems.map(item => ({
         productName: item.productName,
         productThumbnailUrl: item.productThumbnailUrl,
         productPrice: item.productPrice,
         quantity: item.quantity
-    }));
+      }));
     }
-  }
-  
-  private initConfig(): void {
-    this.payPalConfig = {
-      currency: 'USD', // Set your desired currency code
-      clientId: 'sb', // Replace with your PayPal client ID
-      createOrderOnClient: (data) => {
-        const purchaseUnits = [
-          {
-            amount: {
-              currency_code: 'USD',
-              value: this.order.total.toFixed(2),
-              breakdown: {
-                item_total: {
-                  currency_code: 'USD',
-                  value: this.order.subtotal.toFixed(2),
-                },
-                tax_total: {
-                  currency_code: 'USD',
-                  value: this.order.tax.toFixed(2),
-                },
-              },
-            },
-            items: this.cart?.cartItems.map((item) => ({
-              name: item.productName,
-              quantity: item.quantity.toString(),
-              category: 'DIGITAL_GOODS',
-              unit_amount: {
-                currency_code: 'USD',
-                value: item.productPrice.toFixed(2),
-              },
-            })),
-          },
-        ];
-
-        return {
-          intent: 'CAPTURE',
-          purchase_units: purchaseUnits,
-        } as ICreateOrderRequest;
-      },
-      advanced: {
-        commit: 'true',
-      },
-      style: {
-        label: 'paypal',
-        layout: 'vertical',
-      },
-      onApprove: (data, actions) => {
-        console.log(
-          'onApprove - transaction was approved, but not authorized',
-          data,
-          actions
-        );
-        actions.order.get().then((details: any) => {
-          console.log(
-            'onApprove - you can get full order details inside onApprove: ',
-            details
-          );
-        });
-      },
-      onClientAuthorization: (data) => {
-        console.log(
-          'onClientAuthorization - you should probably inform your server about completed transaction at this point',
-          data
-        );
-        this.order.payment.paymentMethod = 'PayPal';
-        this.order.payment.paymentStatus = data.status;
-        this.order.payment.paymentTime = data.update_time;
-        this.order.status = 'Completed';
-        this.placeOrder();
-      },
-      onCancel: (data, actions) => {
-        console.log('OnCancel', data, actions);
-        // Handle cancel event
-      },
-      onError: (err) => {
-        console.log('OnError', err);
-        // Handle error event
-      },
-      onClick: (data, actions) => {
-        console.log('onClick', data, actions);
-        // Handle click event
-      },
-    };
   }
 
   onPaymentMethodChange(event: Event) {
@@ -188,30 +124,97 @@ export class CheckoutComponent implements OnInit{
     if (this.checkoutForm.invalid) {
       return;
     }
+
+    this.isProcessing = true;
+
     if (this.paymentMethod === 'payAfterDelivery') {
-      this.order.payment = {
-        paymentMethod: 'Pay After Delivery',
-        paymentStatus: 'Pending',
-        paymentTime: new Date().toISOString(),
-        amount: this.order.total
-      };
-      this.order.status = 'Pending';
-      this.placeOrder();
+      this.processPayAfterDeliveryOrder();
+    } else if (this.paymentMethod === 'stripe') {
+      this.processStripeOrder();
     }
+  }
+
+  processPayAfterDeliveryOrder() {
+    this.order.payment = {
+      paymentMethod: 'Pay After Delivery',
+      paymentStatus: 'Pending',
+      paymentTime: new Date().toISOString(),
+      amount: this.order.total
+    };
+    this.order.status = 'Pending';
+    this.placeOrder();
+  }
+
+  processStripeOrder() {
+    this.stripeService.createToken(this.card.element).subscribe({
+      next: result => {
+        if (result.token) {
+          // Send the token to your server
+          this.http.post('http://localhost:8080/api/orders/process-payment', {
+            token: result.token.id,
+            amount: this.order.total * 100, // amount in cents
+            currency: 'usd'
+          }).subscribe({
+            next: (response: any) => {
+              if (response.status === 'succeeded') {
+                this.order.payment = {
+                  paymentMethod: 'Stripe',
+                  paymentStatus: 'Completed',
+                  paymentTime: new Date().toISOString(),
+                  amount: this.order.total
+                };
+                this.order.status = 'Processing';
+                this.placeOrder();
+              } else {
+                console.error('Payment failed:', response);
+                this.isProcessing = false;
+                // Handle payment failure (e.g., show error message to user)
+              }
+            },
+            error: err => {
+              console.error('Error processing payment:', err);
+              this.isProcessing = false;
+              // Handle error (e.g., display to user)
+            }
+          });
+        } else if (result.error) {
+          console.error('Stripe error:', result.error.message);
+          this.isProcessing = false;
+         
+        }
+      },
+      error: err => {
+        console.error('Error creating Stripe token:', err);
+        this.isProcessing = false;
+        
+      }
+    });
   }
 
   placeOrder() {
     this.orderService.placeOrder(this.order).subscribe({
-      next: (order : Order) => {
+      next: (order: Order) => {
         console.log('Order placed successfully', order);
-          this.cartService.clearCart(this.userId).subscribe(() => {
+        this.cartService.clearCart(this.userId).subscribe({
+          next: () => {
+            this.isProcessing = false;
             this.router.navigate(['/order-confirmation'], { state: { order: order } });
+          },
+          error: err => {
+            console.error('Error clearing cart:', err);
+            this.isProcessing = false;
+            // Handle error (e.g., display to user)
+          }
         });
       },
-      error: err => console.error('Error placing order:', err)
+      error: err => {
+        console.error('Error placing order:', err);
+        this.isProcessing = false;
+        // Handle error (e.g., display to user)
+      }
     });
   }
-  
+
   isFieldInvalid(fieldName: string): boolean {
     const field = this.checkoutForm?.form.get(fieldName);
     return (field?.invalid && (field.dirty || field.touched)) || (this.formSubmitted && field?.invalid) || false;

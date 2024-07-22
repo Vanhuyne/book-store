@@ -17,6 +17,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
+import { NgxStripeModule } from 'ngx-stripe';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
     FormsModule,
     NgxPayPalModule,
     ReactiveFormsModule,
-    
+    NgxStripeModule
   ],
 })
 export class FeaturesModule {}
