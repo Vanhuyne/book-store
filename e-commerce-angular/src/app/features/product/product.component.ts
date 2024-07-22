@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../models/product';
 import { environment } from '../../../environments/environment';
-import { CartService } from '../../service/cart.service';
 
 @Component({
   selector: 'app-product',
@@ -15,7 +14,9 @@ export class ProductComponent {
 
   constructor() {}
 
-  addToCart() {
-      this.addToCartClicked.emit(this.product.productId);
+  addToCart(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.addToCartClicked.emit(this.product.productId);
   }
 }

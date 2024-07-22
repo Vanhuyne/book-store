@@ -1,16 +1,17 @@
-<div *ngIf="product" class="bg-white shadow-xl p-1 overflow-hidden m-2 mt-5 border hover:shadow-2xl transform transition-all duration-200 hover:scale-105">
-  <a [routerLink]="['/product', product.productId]" class="block">
-    <img [src]="apiThumnailUrl + product.thumbnailUrl" alt="{{ product.name }}" class="w-full h-52 object-cover">
-    <div class="p-2">
-      <h2 class="font-bold h-12">{{ product.name }}</h2>
-      <p class="text-gray-800 font-bold mt-2">{{ product.price | currency }}</p>
-      <p class="text-gray-500">Stock: {{ product.stockQuantity }}</p>
+<div [routerLink]="['/product', product.productId]" class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transform transition-all duration-300 hover:scale-105 cursor-auto " *ngIf="product">
+  <img [src]="apiThumnailUrl + product.thumbnailUrl" [alt]="product.name" class="w-full h-64 object-cover">
+  <div class="p-4">
+    <h2 class="font-bold text-xl mb-2 h-14 overflow-hidden">{{ product.name }}</h2>
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-xl font-bold text-blue-600">{{ product.price | currency }}</span>
+      <span class="text-sm text-gray-600">Stock: {{ product.stockQuantity }}</span>
     </div>
-  </a>
-  <button (click)="addToCart()" class="my-2 w-full bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 flex items-center justify-center space-x-2">
-    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
-    </svg>
-    <span>Add to cart</span>
-  </button>
+    <button (click)="addToCart($event)" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+      Add to cart
+    </button>
+  </div>
 </div>
+

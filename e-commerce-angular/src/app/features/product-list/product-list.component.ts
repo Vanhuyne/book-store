@@ -18,7 +18,7 @@ export class ProductListComponent implements OnInit{
   products: Product[] = [];
   totalPages: number = 0;
   currentPage: number = 0;
-  pageSize: number = 5;
+  pageSize: number = 8;
   pageNumbers: number[] = [];
   selectedCategory: string | null = null;
   categories: Category[] = [];

@@ -2,7 +2,7 @@
   <header *ngIf="showHeaderFooter" class="fixed top-0 left-0 right-0 z-50">
     <app-navbar></app-navbar>
   </header>
-  <main [ngClass]="{'mt-16': showHeaderFooter, 'flex-grow': true}">
+  <main [ngClass]="{ showHeaderFooter, 'flex-grow': true}">
     <router-outlet></router-outlet>
   </main>
   <footer *ngIf="showHeaderFooter" class="mt-auto">

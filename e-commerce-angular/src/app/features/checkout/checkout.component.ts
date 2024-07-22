@@ -11,6 +11,8 @@ import { CartService } from '../../service/cart.service';
 import { OrderService } from '../../service/order.service';
 import { AuthService } from '../../service/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-checkout',
@@ -20,6 +22,7 @@ import { HttpClient } from '@angular/common/http';
 export class CheckoutComponent implements OnInit {
   @ViewChild('checkoutForm') checkoutForm!: NgForm;
   @ViewChild(StripeCardComponent) card!: StripeCardComponent;
+  baseUrl = environment.apiUrl;
 
   userId: number = 0;
   cart: Cart | undefined;
@@ -65,7 +68,8 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private authService: AuthService,
     private stripeService: StripeService,
-    private http : HttpClient
+    private http : HttpClient,
+    private toast : ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -150,7 +154,7 @@ export class CheckoutComponent implements OnInit {
       next: result => {
         if (result.token) {
           // Send the token to your server
-          this.http.post('http://localhost:8080/api/orders/process-payment', {
+          this.http.post(`${this.baseUrl}/orders/process-payment`, {
             token: result.token.id,
             amount: this.order.total * 100, // amount in cents
             currency: 'usd'
@@ -166,13 +170,15 @@ export class CheckoutComponent implements OnInit {
                 this.order.status = 'Processing';
                 this.placeOrder();
               } else {
+                this.toast.error('Payment failed');
                 console.error('Payment failed:', response);
                 this.isProcessing = false;
                 // Handle payment failure (e.g., show error message to user)
               }
             },
             error: err => {
-              console.error('Error processing payment:', err);
+              
+              this.toast.error('Error processing payment');
               this.isProcessing = false;
               // Handle error (e.g., display to user)
             }

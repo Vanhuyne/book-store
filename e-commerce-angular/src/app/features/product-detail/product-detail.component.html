@@ -1,5 +1,11 @@
-<div *ngIf="product" class="container mx-auto p-5 max-w-7xl">
-  <div class="bg-white shadow-lg border border-gray-300 overflow-hidden ">
+<div *ngIf="product" class="container mx-auto max-w-7xl p-8 bg-white shadow-lg rounded-lg">
+  <a routerLink="/" class="flex items-center text-blue-600 hover:underline mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
+    </svg>
+    Back to catalog
+  </a>
+  <div class="bg-white shadow-lg border border-gray-300 overflow-hidden rounded-md ">
     <div class="flex flex-wrap">
       <!-- Main Image -->
       <div class="w-full md:w-1/2 p-5 flex justify-center items-center">
@@ -20,7 +26,6 @@
           </svg>
         </button>
       </div>
-
       <!-- Product Details -->
       <div class="w-full md:w-1/2 p-14">
         <h1 class="text-3xl font-bold mb-2" aria-label="Product Name">{{ product.name }}</h1>
@@ -33,7 +38,7 @@
         <!-- Quantity Control -->
         <div class="flex items-center mb-4" aria-label="Quantity Control">
           <button (click)="decreaseQuantity()"
-            class="bg-gray-50 border border-gray-950 w-10 h-10 flex items-center justify-center "
+            class="bg-gray-50 border border-gray-950 w-10 h-10 flex items-center justify-center rounded-md"
             aria-label="Decrease Quantity">
             <svg class="w-6 h-6 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
@@ -41,7 +46,7 @@
           </button>
           <span class="mx-4 text-xl" aria-label="Current Quantity">{{ quantity }}</span>
           <button (click)="increaseQuantity()"
-            class="bg-gray-50 border border-gray-950 w-10 h-10 flex items-center justify-center "
+            class="bg-gray-50 border border-gray-950 w-10 h-10 flex items-center justify-center rounded-md"
             aria-label="Increase Quantity">
             <svg class="w-6 h-6 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd"
@@ -52,15 +57,11 @@
         </div>
 
         <!-- Add to Cart Button -->
-        <button (click)="addToCart()"
-          class="my-2 w-full bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 flex items-center justify-center space-x-2"
-          aria-label="Add to Cart">
-          <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-            fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312" />
+        <button (click)="addToCart()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
           </svg>
-          <span>Add to cart</span>
+          Add to cart
         </button>
       </div>
     </div>
@@ -72,9 +73,9 @@
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <div *ngFor="let photo of product.photoUrls.slice(0, 3)" class="relative cursor-pointer p-3"
             (click)="setMainImage(photo.url)" aria-label="Additional Photo">
-            <div class="square-container border border-gray-400 me-5">
+            <div class="square-container border border-gray-400 me-5 ">
               <img [src]="apiThumbnailUrl + photo.url" alt="{{ product.name }}"
-                class="absolute inset-0 w-full h-full object-cover border border-gray-300" aria-label="Photo">
+                class="absolute inset-0 w-full h-full object-cover border border-gray-300 " aria-label="Photo">
             </div>
           </div>
         </div>

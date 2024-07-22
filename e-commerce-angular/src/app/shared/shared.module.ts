@@ -6,6 +6,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { SlideshowComponent } from './slideshow/slideshow.component';
 
 
 @NgModule({
@@ -16,11 +17,13 @@ import { RouterModule } from '@angular/router';
   ],
   exports: [
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    SlideshowComponent
   ],
   declarations: [
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    SlideshowComponent
   ]
 })
 export class SharedModule{}

@@ -10,7 +10,6 @@ import { ProductListComponent } from './product-list/product-list.component';
 import { ProductComponent } from './product/product.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
-import { NgxPayPalModule } from 'ngx-paypal';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -18,6 +17,7 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { NgxStripeModule } from 'ngx-stripe';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -33,15 +33,14 @@ import { NgxStripeModule } from 'ngx-stripe';
     ProductDetailComponent,
     UserProfileEditComponent,
     OrderDetailComponent,
-    
   ],
   imports: [
     CommonModule,
     FeaturesRoutingModule,
     FormsModule,
-    NgxPayPalModule,
     ReactiveFormsModule,
-    NgxStripeModule
+    NgxStripeModule,
+    SharedModule
   ],
 })
 export class FeaturesModule {}

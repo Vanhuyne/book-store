@@ -1,96 +1,86 @@
-<div *ngIf="cart" class="p-4 max-w-7xl mx-auto bg-white shadow-md space-y-4 container">
-  <a [routerLink]="['/']" class="flex items-center hover:underline ">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-      class="w-6 h-6 mr-2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+<div class="container mx-auto max-w-7xl p-8 bg-white shadow-lg rounded-lg" *ngIf="cart">
+  <a routerLink="/" class="flex items-center text-blue-600 hover:underline mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
     </svg>
     Back to shopping
   </a>
-  <h2 class="text-2xl font-bold text-gray-900 ">Shopping Cart</h2>
+
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Your Reading Cart</h1>
+
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Cart Items Section -->
-    <div class="lg:col-span-2 bg-gray-50 p-6 border border-gray-300 shadow-inner">
-      <!-- Headers for the cart items -->
-      <div class="flex items-center border-b py-2 space-x-4">
-        <div class="w-20 h-16"></div> <!-- Empty space for the image column -->
+    <div class="lg:col-span-2 bg-gray-50 p-6 border border-gray-300 rounded-lg shadow-inner">
+      <div class="flex items-center border-b py-2 space-x-4 font-semibold text-gray-700">
+        <div class="w-20"></div>
         <div class="flex-1 grid grid-cols-4 gap-4">
-          <div class="col-span-2 text-lg font-semibold text-gray-700">Name</div>
-          <div class="col-span-1 text-right text-lg font-semibold text-gray-700">Price</div>
-          <div class="col-span-1 text-right text-lg font-semibold text-gray-700">Quantity</div>
+          <div class="col-span-2">Book</div>
+          <div class="text-right">Price</div>
+          <div class="text-right">Quantity</div>
         </div>
-        <div class="w-[18px] h-[18px]"></div> <!-- Empty space for the remove button column -->
+        <div class="w-[18px]"></div>
       </div>
-      <!-- Cart items -->
-      <div *ngFor="let item of cart.cartItems" class="flex items-center border-b py-4 space-x-4">
-        <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}"
+
+      <div class="flex items-center border-b py-4 space-x-4" *ngFor="let item of cart.cartItems">
+        <div class="w-20 h-20 bg-gray-200 rounded-md">
+          <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}"
           class="w-20 h-20 object-cover">
+        </div>
+       
         <div class="flex-1 grid grid-cols-4 gap-4 items-center">
           <div class="col-span-2">
-            <p class="text-lg text-gray-700">{{ item.productName }}</p>
+            <h3 class="font-semibold">{{ item.productName }}</h3>
           </div>
-          <div class="col-span-1 text-right">
-            <p class="text-lg text-gray-700">${{ item.productPrice }}</p>
-          </div>
-          <div class="col-span-1 flex items-center justify-end space-x-2">
-            <button (click)="decreaseQuantity(item)" [disabled]="loadingCart"
-              class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                stroke="currentColor" className="size-">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+          <div class="text-right">${{ item.productPrice }}</div>
+          <div class="flex items-center justify-end space-x-2">
+            <button (click)="decreaseQuantity(item)" class="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="{1.5}" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
               </svg>
-
             </button>
-            <p class="text-lg text-gray-700">{{ item.quantity }}</p>
-            <button (click)="increaseQuantity(item)"
-              class="text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center border border-gray-300 ">
-              <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5 12h14m-7 7V5" />
+            <span>{{ item.quantity }}</span>
+            <button (click)="increaseQuantity(item)" class="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300">
+              <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
               </svg>
-
             </button>
           </div>
         </div>
         <button (click)="removeCartItem(userId, item.cartItemId)" class="text-red-600 hover:text-red-800 font-bold">
-          <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
-              d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+  
+          <svg class="w-[18px] h-[18px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
           </svg>
         </button>
       </div>
     </div>
 
-    <!-- Order Summary Section -->
-    <div class="lg:col-span-1 bg-gray-50 p-6 border border-gray-300 shadow-md">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h3>
+    <div class="lg:col-span-1 bg-gray-50 p-6 border border-gray-300 rounded-lg shadow-md">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h2>
       <div class="space-y-4">
         <div class="flex justify-between">
-          <p class="text-lg text-gray-700">Subtotal</p>
-          <p class="text-lg text-gray-700">${{ getTotal(cart.cartItems) }}</p>
+          <span>Subtotal</span>
+          <span>${{ getTotal(cart.cartItems) }}</span>
         </div>
-        <hr class="border-gray-300"> <!-- Horizontal line -->
-        <div class="flex justify-between">
-          <p class="text-lg text-gray-700">Tax</p>
-          <p class="text-lg text-gray-700">${{ getTax(cart.cartItems) }}</p>
+        <div class="border-t border-gray-300 pt-4">
+          <div class="flex justify-between">
+            <span>Tax</span>
+            <span>${{ getTax(cart.cartItems) }}</span>
+          </div>
         </div>
-        <hr class="border-gray-300"> <!-- Horizontal line -->
-        <div class="flex justify-between font-bold">
-          <p class="text-lg text-gray-800">Total</p>
-          <p class="text-lg text-gray-800">${{ getTotalWithTax(cart.cartItems) }}</p>
+        <div class="border-t border-gray-300 pt-4">
+          <div class="flex justify-between font-bold text-lg">
+            <span>Total</span>
+            <span>${{ getTotalWithTax(cart.cartItems) }}</span>
+          </div>
         </div>
       </div>
-      <div class="pt-4">
-        <button class="w-full bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4"
-          (click)="proceedToCheckout()">
-          Checkout
-        </button>
-      </div>
+      <button (click)="proceedToCheckout()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300 mt-6">
+        Proceed to Checkout
+      </button>
     </div>
   </div>
 </div>
 
-<div *ngIf="!cart" class="flex justify-center items-center h-64">
-  <p class="text-xl text-gray-700">Loading...</p>
+<div class="flex justify-center items-center h-64" *ngIf="!cart">
+  <div class="text-xl text-gray-600">Loading your cart...</div>
 </div>
