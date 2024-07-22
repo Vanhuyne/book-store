@@ -103,7 +103,7 @@ public class AuthenticationService{
     private User createGoogleUser(String email, String name, String pictureUrl) {
         User newUser = new User();
         newUser.setEmail(email);
-        newUser.setUsername(email);
+        newUser.setUsername(name);
 
         String password = generateRandomPassword();
         newUser.setPassword(passwordEncoder.encode(password));
@@ -126,4 +126,5 @@ public class AuthenticationService{
     private String generateRandomPassword() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 20);
     }
+
 }

@@ -19,6 +19,7 @@ export class RegisterComponent {
     lastName: ''
   }
   formSubmitted = false;
+  isLoading = false;
   errors: any = {};
   constructor(
     private authService: AuthService,
@@ -30,12 +31,15 @@ export class RegisterComponent {
       this.formSubmitted = true;
       this.errors = {}; // Reset errors
       if (this.user.username && this.user.password && this.user.email && this.user.firstName && this.user.lastName) {
+        this.isLoading = true;
         this.authService.register(this.user).subscribe({
           next: () => {
+            this.isLoading = false;
             this.toastrService.success('Registration successful! Please login to continue.')
             this.router.navigate(['/login']);
           },
           error: (error) => {
+            this.isLoading = false;
             if (error.status === 400 && error.error && typeof error.error === 'string') {
               const errorMessages = error.error.split(';');
                 errorMessages.forEach((errorMessage: string) => {

@@ -1,8 +1,7 @@
-
-<div class="container mx-auto max-w-7xl ">
-  <div class="flex">
+<div class="container mx-auto max-w-7xl">
+  <div class="flex flex-col md:flex-row">
     <!-- Filter Sidebar -->
-    <div class="w-1/4 p-4 bg-gray-100 rounded">
+    <div class="w-full md:w-1/4 p-4 bg-gray-100 rounded mb-4 md:mb-0">
       <h3 class="text-xl font-bold mb-4">Filters</h3>
       <div class="mb-4">
         <label class="block text-gray-700">Min Price</label>
@@ -22,7 +21,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="w-3/4 pl-4">
+    <div class="w-full md:w-3/4 pl-0 md:pl-4">
       <!-- Category Buttons -->
       <div class="flex flex-wrap justify-center mb-4 space-x-2">
         <button (click)="showAllProducts()" [ngClass]="{
@@ -42,9 +41,9 @@
       <!-- Product Grid -->
       <div class="mx-4 flex justify-start items-start">
         <h3 class="text-2xl font-bold">Products</h3>
-        <span class="ml-4 text-xl  text-gray-700" *ngIf="totalResults !== null">({{ totalResults }} results)</span>
+        <span class="ml-4 text-xl text-gray-700" *ngIf="totalResults !== null">({{ totalResults }} results)</span>
       </div>
-      <div *ngIf="products.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+      <div *ngIf="products.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
         <app-product *ngFor="let product of products" [product]="product" (addToCartClicked)="addToCart($event)"></app-product>
       </div>
       <div *ngIf="!products.length" class="text-center text-gray-600 mt-14">
@@ -54,7 +53,7 @@
       <!-- Pagination -->
       <div class="flex justify-center items-center mt-4 space-x-2">
         <button (click)="previousPage()" [disabled]="currentPage === 0" class="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full disabled:opacity-50">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
           </svg>
         </button>
@@ -67,7 +66,7 @@
           </button>
         </div>
         <button (click)="nextPage()" [disabled]="currentPage + 1 === totalPages" class="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full disabled:opacity-50">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
         </button>

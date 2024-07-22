@@ -72,7 +72,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <div *ngFor="let photo of product.photoUrls.slice(0, 3)" class="relative cursor-pointer p-3"
             (click)="setMainImage(photo.url)" aria-label="Additional Photo">
-            <div class="square-container border border-gray-400">
+            <div class="square-container border border-gray-400 me-5">
               <img [src]="apiThumbnailUrl + photo.url" alt="{{ product.name }}"
                 class="absolute inset-0 w-full h-full object-cover border border-gray-300" aria-label="Photo">
             </div>
