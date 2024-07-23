@@ -4,7 +4,7 @@ import com.huy.ecommerce.dtos.OrderDTO;
 import com.huy.ecommerce.service.OrderService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
+import com.stripe.model.PaymentIntent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -28,32 +28,35 @@ public class OrderController {
         return new ResponseEntity<>(savedOrderDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/process-payment")
-    public ResponseEntity<?> processPayment(@RequestBody Map<String, Object> paymentInfo) {
+    @PostMapping("/create-payment-intent")
+    public ResponseEntity<?> createPaymentIntent(@RequestBody Map<String, Object> paymentInfo) {
         try {
             Stripe.apiKey = stripeSecretKey;
 
-            Map<String, Object> chargeParams = new HashMap<>();
-            chargeParams.put("amount", paymentInfo.get("amount"));
-            chargeParams.put("currency", "usd");
-            chargeParams.put("source", paymentInfo.get("token"));
-            chargeParams.put("description", "Charge for order");
+            // Ensure the amount is an integer
+            Long amount = ((Number) paymentInfo.get("amount")).longValue();
 
-            Charge charge = Charge.create(chargeParams);
+            Map<String, Object> params = new HashMap<>();
+            params.put("amount", amount );
+            params.put("currency", "usd");
+            params.put("payment_method_types", new String[]{"card"});
 
-            // If the charge is successful, you can update the order status or perform other actions
-            if (charge.getStatus().equals("succeeded")) {
-                Map<String, String> response = new HashMap<>();
-                response.put("status", "succeeded");
-                response.put("chargeId", charge.getId());
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED)
-                        .body(Map.of("status", "failed", "message", "Payment was unsuccessful"));
-            }
+            // Explicitly request 3D Secure authentication
+            Map<String, Object> paymentMethodOptions = new HashMap<>();
+            Map<String, Object> cardOptions = new HashMap<>();
+            cardOptions.put("request_three_d_secure", "any");
+            paymentMethodOptions.put("card", cardOptions);
+            params.put("payment_method_options", paymentMethodOptions);
+
+            PaymentIntent paymentIntent = PaymentIntent.create(params);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("client_secret", paymentIntent.getClientSecret());
+
+            return ResponseEntity.ok(response);
         } catch (StripeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("status", "error", "message", e.getMessage()));
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

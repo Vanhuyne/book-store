@@ -1,5 +1,6 @@
 package com.huy.ecommerce.dtos;
 
+import com.huy.ecommerce.entities.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,4 +38,5 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Set<String> roles;
+    private Status status;
 }

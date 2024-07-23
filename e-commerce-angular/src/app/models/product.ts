@@ -11,4 +11,5 @@ export interface Product {
     createdAt: string; // LocalDateTime will be a string in JSON
     updatedAt: string;
     photoUrls: Photo[];
+    rating: number;
 }

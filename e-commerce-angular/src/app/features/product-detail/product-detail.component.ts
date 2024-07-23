@@ -5,6 +5,7 @@ import { ProductService } from '../../service/product.service';
 import { environment } from '../../../environments/environment';
 import { CartService } from '../../service/cart.service';
 import { AuthService } from '../../service/auth.service';
+import { RatingService } from '../../service/rating.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,28 +19,48 @@ export class ProductDetailComponent implements OnInit {
   mainImage: string = '';
   currentImageIndex: number = 0; 
   quantity: number = 1;
+  productId :number = 0;
+  rating: number = 0;
+  userRating: number = 0;
+
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService,
     private authService: AuthService,
-    private router : Router
+    private router : Router,
+    private ratingService: RatingService
   ) {}
 
   ngOnInit(): void {
-    const productId = this.route.snapshot.paramMap.get('id');
-    if (productId) {
-      this.productService.getProductById(+productId).subscribe(
-        (product: Product) => {
-          this.product = product;
-          this.mainImage = product.thumbnailUrl;
-        },
-        (error) => {
-          console.error('Error fetching product details', error);
-        }
-      );
+    this.productId = parseInt(this.route.snapshot.paramMap.get('id') || '0');
+    if (this.productId) {
+      this.loadProductDetails();
+      this.loadAverageRating();
     }
+  }
+
+  loadProductDetails() {
+    this.productService.getProductById(this.productId).subscribe(
+      (product: Product) => {
+        this.product = product;
+        this.mainImage = product.thumbnailUrl;
+      },
+      (error) => {
+        console.error('Error fetching product details', error);
+      }
+    );
+  }
+  loadAverageRating() {
+    this.ratingService.getAverageRating(this.productId).subscribe(
+      (average: number) => {
+        this.rating = average;
+      },
+      error => {
+        console.error('Error getting average rating', error);
+      }
+    );
   }
 
   // Method to set the main image URL
@@ -71,8 +92,8 @@ export class ProductDetailComponent implements OnInit {
     this.authService.getUser().subscribe(user => {
       if(user){
         const userId = user.userId;
-        const productId = this.route.snapshot.paramMap.get('id') || 0;
-        this.cartService.addProductToCart(userId, +productId, this.quantity).subscribe({
+  
+        this.cartService.addProductToCart(userId, this.productId, this.quantity).subscribe({
           next: (cart) => console.log('Product added to cart', cart),
           error: (err) => console.error('Error adding product to cart:', err)
         });
@@ -93,5 +114,26 @@ export class ProductDetailComponent implements OnInit {
     if (this.quantity > 1) {
       this.quantity--;
     }
+  }
+
+  // Generate an array with 5 elements for star ratings
+  getStarArray(): number[] {
+    return [1, 2, 3, 4, 5];
+  }
+
+  rateProduct(rating: number) {
+    this.authService.getUser().subscribe(user => {
+      if (user) {
+        this.ratingService.addRating(this.productId, user.userId, rating).subscribe({
+          next: () => {
+            this.userRating = rating;
+            this.loadAverageRating();
+          },
+          error: (error) => console.error('Error adding rating', error)
+        });
+      } else {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

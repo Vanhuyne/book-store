@@ -3,12 +3,16 @@ package com.huy.ecommerce.service;
 import com.huy.ecommerce.dtos.UserDTO;
 import com.huy.ecommerce.dtos.UserRegistrationDTO;
 import com.huy.ecommerce.entities.Role;
+import com.huy.ecommerce.entities.Status;
 import com.huy.ecommerce.entities.User;
 import com.huy.ecommerce.exception.ResourceConflictException;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
 import com.huy.ecommerce.repository.RoleRepository;
 import com.huy.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -49,6 +54,7 @@ public class UserService {
         newUser.setLastName(userDTO.getLastName());
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
+        newUser.setStatus(Status.ACTIVE);
 
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
@@ -135,6 +141,7 @@ public class UserService {
         userDTO.setProfilePictureUrl(user.getProfilePictureUrl());
         userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setUpdatedAt(user.getUpdatedAt());
+        userDTO.setStatus(user.getStatus());
 
         Set<String> roles = user.getRoles().stream()
                 .map(Role::getName)
@@ -151,10 +158,53 @@ public class UserService {
         if (userDTO.getAddress() != null) user.setAddress(userDTO.getAddress());
         if (userDTO.getPhone() != null) user.setPhone(userDTO.getPhone());
         if (userDTO.getProfilePictureUrl() != null) user.setProfilePictureUrl(userDTO.getProfilePictureUrl());
+        if (userDTO.getStatus() != null) user.setStatus(userDTO.getStatus());
     }
 
     private String generateRandomFileName(String originalFilename) {
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         return UUID.randomUUID().toString() + extension;
+    }
+
+    // get all users
+    public Page<UserDTO> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(this::convertToDTO);
+    }
+
+    public UserDTO getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        return convertToDTO(user);
+    }
+
+    public UserDTO updateUser(Long userId, UserDTO userDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (!user.getUsername().equals(userDTO.getUsername()) &&
+                userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new ResourceConflictException("Username is already taken.");
+        }
+
+        if (!user.getEmail().equals(userDTO.getEmail()) &&
+                userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new ResourceConflictException("Email is already in use.");
+        }
+
+        updateUserFields(user, userDTO);
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return convertToDTO(user);
+    }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        user.setStatus(Status.DELETED);
+        userRepository.save(user);
     }
 }

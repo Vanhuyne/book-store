@@ -14,7 +14,6 @@ export class UserProfileEditComponent implements OnInit {
   user: UserDTO | null = null;
   profileForm!: FormGroup;
   isLoading = false;
-  // updateSuccess = false;
   selectedFile: File | null = null;
 
   constructor(

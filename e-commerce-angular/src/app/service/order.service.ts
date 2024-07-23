@@ -10,10 +10,12 @@ import { Order } from '../models/order';
 export class OrderService {
   private orderUrl = `${environment.apiUrl}/orders`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient  ) {}
 
   placeOrder(order: Order): Observable<Order> {
     const url = `${this.orderUrl}/place-order`;
     return this.http.post<Order>(url, order);
   }
+
 }

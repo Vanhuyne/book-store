@@ -44,6 +44,8 @@ public class AuthenticationService{
 
         final UserDetails userDetails = userRepository.findByUsername(authRequest.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // check if user is active
         final String jwt = jwtService.generateToken(userDetails);
 
         return new AuthResponse(jwt);

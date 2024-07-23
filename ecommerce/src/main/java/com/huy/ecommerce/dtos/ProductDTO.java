@@ -23,4 +23,5 @@ public class ProductDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<PhotoDTO> photoUrls;
+    private double averageRating;
 }

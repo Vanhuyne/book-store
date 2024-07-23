@@ -6,6 +6,7 @@ import com.huy.ecommerce.dtos.ProductFilterDTO;
 import com.huy.ecommerce.dtos.ProductSpecification;
 import com.huy.ecommerce.entities.Photo;
 import com.huy.ecommerce.entities.Product;
+import com.huy.ecommerce.entities.Rating;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
 import com.huy.ecommerce.repository.CategoryRepository;
 import com.huy.ecommerce.repository.PhotoRepository;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,6 +60,7 @@ public class ProductService {
         productDTO.setUpdatedAt(product.getUpdatedAt());
         productDTO.setPhotoUrls(product.getPhotos().stream()
                 .map(this::convertToPhotoDTO).toList());
+        productDTO.setAverageRating(calculateAverageRating(product.getRatings()));
         return productDTO;
     }
 
@@ -81,6 +84,7 @@ public class ProductService {
                     photo.setProduct(product);
                     return photo;
                 }).toList());
+
         return product;
     }
 
@@ -178,4 +182,10 @@ public class ProductService {
         return products.map(this::convertToDTO);
     }
 
+    private double calculateAverageRating(List<Rating> ratings) {
+        return ratings.stream()
+                .mapToInt(Rating::getRatingValue)
+                .average()
+                .orElse(0.0);
+    }
 }

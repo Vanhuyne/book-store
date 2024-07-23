@@ -58,6 +58,9 @@ public class User implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Order> orders;
 
