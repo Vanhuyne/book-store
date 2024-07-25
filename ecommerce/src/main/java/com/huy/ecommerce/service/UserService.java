@@ -166,45 +166,54 @@ public class UserService {
         return UUID.randomUUID().toString() + extension;
     }
 
-    // get all users
     public Page<UserDTO> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(this::convertToDTO);
+        return userRepository.findAll(pageable).map(this::convertToDTO);
     }
 
     public UserDTO getUserById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         return convertToDTO(user);
     }
 
-    public UserDTO updateUser(Long userId, UserDTO userDTO) {
+    public UserDTO deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-        if (!user.getUsername().equals(userDTO.getUsername()) &&
-                userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new ResourceConflictException("Username is already taken.");
-        }
-
-        if (!user.getEmail().equals(userDTO.getEmail()) &&
-                userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new ResourceConflictException("Email is already in use.");
-        }
-
-        updateUserFields(user, userDTO);
-
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-
-        return convertToDTO(user);
-    }
-
-    public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         user.setStatus(Status.DELETED);
-        userRepository.save(user);
+        user.setUpdatedAt(LocalDateTime.now());
+        User updatedUser = userRepository.save(user);
+        return convertToDTO(updatedUser);
     }
+
+    // Update user status
+    public UserDTO updateUserStatus(Long userId, Status status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        user.setStatus(status);
+        user.setUpdatedAt(LocalDateTime.now());
+        User updatedUser = userRepository.save(user);
+        return convertToDTO(updatedUser);
+    }
+
+
+    // Additional methods for dashboard functionality
+
+    public List<UserDTO> getRecentUsers(int limit) {
+        List<User> recentUsers = userRepository.findTop10ByOrderByCreatedAtDesc();
+        return recentUsers.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+//    public long getTotalUserCount() {
+//        return userRepository.count();
+//    }
+
+    public long getActiveUserCount() {
+        return userRepository.countByStatus(Status.ACTIVE);
+    }
+
+    public Long getTotalUser(){
+        return userRepository.getTotalUsers();
+    }
+
 }

@@ -18,4 +18,16 @@ export class OrderService {
     return this.http.post<Order>(url, order);
   }
 
+  getTotalOrders(): Observable<number> {
+    return this.http.get<number>(`${this.orderUrl}/total-orders`);
+  }
+
+  getTotalRevenue(): Observable<number> {
+    return this.http.get<number>(`${this.orderUrl}/total-revenue`);
+  }
+
+  getMonthlyOrders(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.orderUrl}/monthly-orders`);
+  }
+
 }

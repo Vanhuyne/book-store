@@ -120,6 +120,19 @@ public class OrderService {
         return savedOrderDTO;
     }
 
+    public long getTotalOrders() {
+        return orderRepository.count();
+    }
 
+    public Double getTotalRevenue() {
+        return orderRepository.getTotalRevenue();
+    }
 
+    public List<Long> getMonthlyOrders() {
+        List<Object[]> results = orderRepository.countOrdersPerMonth();
+        List<Long> monthlyOrders = results.stream()
+                .map(result -> ((Number) result[1]).longValue())
+                .collect(Collectors.toList());
+        return monthlyOrders;
+    }
 }

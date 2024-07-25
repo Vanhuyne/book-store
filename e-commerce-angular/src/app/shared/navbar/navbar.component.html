@@ -5,9 +5,12 @@
     </a>
     <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
       <!-- Cart Icon -->
-      <a routerLink="/cart" class="flex items-center pe-8 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 relative">
-        <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+      <a *ngIf="!isAdminRoute" routerLink="/cart"
+        class="flex items-center pe-8 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 relative">
+        <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+          width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"
+            d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312" />
         </svg>
         <span *ngIf="cartItemCount > 0" class="absolute cart-count">{{ cartItemCount }}</span>
       </a>
@@ -17,9 +20,7 @@
             class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
             id="user-menu-button" aria-expanded="false" (click)="toggleDropdown()">
             <span class="sr-only">Open user menu</span>
-            <img class="w-8 h-8 rounded-full"
-            [src]="profilePictureUrl + user.profilePictureUrl"
-              alt="user photo">
+            <img class="w-8 h-8 rounded-full" [src]="profilePictureUrl + user.profilePictureUrl" alt="user photo">
           </button>
           <!-- Dropdown menu -->
           <div *ngIf="isDropdownOpen"
@@ -27,7 +28,7 @@
             id="user-dropdown">
             <ul class="py-2" aria-labelledby="user-menu-button">
               <li>
-                <a routerLink="/profile"
+                <a *ngIf="!isAdmin" routerLink="/profile"
                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5 mr-4">
@@ -37,6 +38,19 @@
                   Profile
                 </a>
               </li>
+              <li>
+                <!-- New Admin Dashboard option -->
+                <a *ngIf="isAdmin" routerLink="/admin"
+                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5 mr-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                  </svg>
+                  Admin Dashboard
+                </a>
+              </li>
+
               <li>
                 <a (click)="logout()"
                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer">
@@ -69,7 +83,8 @@
         </svg>
       </button>
     </div>
-    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 " id="navbar-user">
+    <div *ngIf="!isAdminRoute" class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 "
+      id="navbar-user">
       <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 " id="navbar-user">
         <form class="flex w-full md:w-96" (submit)="searchProducts($event)">
           <input type="text" placeholder="Search for books..." [(ngModel)]="keyword" name="keyword"

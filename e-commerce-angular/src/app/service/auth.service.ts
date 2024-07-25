@@ -67,7 +67,6 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = this.getToken();
     return token != null && !this.jwtHelper.isTokenExpired(token);
-
   }
 
   setUser(user: UserDTO): void {
@@ -143,5 +142,12 @@ export class AuthService {
     );
   }
   
-
+  getUserRolesFromToken(): string[] {
+    const token = this.getToken();
+    if (token) {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken && decodedToken.roles ? decodedToken.roles : [];
+    }
+    return [];
+  }
 }

@@ -2,35 +2,45 @@ version: '3'
 
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:8.0
     restart: always
+    container_name: ecommerce-mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1999
+      MYSQL_DATABASE: ecommerce_db
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - ecommerce-network
 
-  maildev:
-    image: maildev/maildev
-    restart: always
-    ports:
-      - "1080:1080"
-      - "1025:1025"
-
-  spring-app :
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-    depends_on:
-        - mysql
-        - maildev
-    restart: always
+    container_name: ecommerce-backend
     ports:
-        - "8080:8080"
+      - "8080:8080"
+    depends_on:
+      - mysql
     environment:
-      - SPRING_MAIL_HOST=maildev
-      - SPRING_MAIL_PORT=1025
-      - SPRING_MAIL_USERNAME=thanvanhuyy@gmail.com
-      - SPRING_MAIL_PASSWORD=rryb aowm rpqi vpmf
-      - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=1999
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1999
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: thanvanhuyy@gmail.com
+      SPRING_MAIL_PASSWORD: rryb aowm rpqi vpmf
+      STRIPE_SECRET_KEY: sk_test_51Pf0vfGcaw8n2DuFCCGXlzvLWSjOD5jQv8DUM2lXEAwfPutffCPZxW4Ouqq1x9YTHi3v1M6eiAB3qrlNYoqPLuUe00rprCtRkr
+    networks:
+      - ecommerce-network
+
+volumes:
+  mysql-data:
+
+networks:
+  ecommerce-network:
+    driver: bridge

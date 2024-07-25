@@ -5,10 +5,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the project's jar file into the container at /app
-COPY target/app.jar app.jar
+COPY target/ecommerce.jar app.jar
 
 # Expose the port your application will run on
 EXPOSE 8080
 
 # Run the jar file
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

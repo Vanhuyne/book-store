@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -60,4 +61,19 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/total-orders")
+    public ResponseEntity<Long> getTotalOrders() {
+        return ResponseEntity.ok(orderService.getTotalOrders());
+    }
+
+    @GetMapping("/total-revenue")
+    public ResponseEntity<Double> getTotalRevenue() {
+        return ResponseEntity.ok(orderService.getTotalRevenue());
+    }
+
+    @GetMapping("/monthly-orders")
+    public ResponseEntity<List<Long>> getMonthlyOrders() {
+        List<Long> monthlyOrders = orderService.getMonthlyOrders();
+        return ResponseEntity.ok(monthlyOrders);
+    }
 }

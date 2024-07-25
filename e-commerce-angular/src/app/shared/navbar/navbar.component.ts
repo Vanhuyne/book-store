@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SharedService } from '../../service/shared.service';
 import { AuthService } from '../../service/auth.service';
-import { Router } from '@angular/router';
-import { initFlowbite } from 'flowbite';
+import {  Event, NavigationEnd, Router } from '@angular/router';
+
 import { CartService } from '../../service/cart.service';
 import { environment } from '../../../environments/environment';
 import { UserDTO } from '../../models/auth/user-dto';
+import {  filter, Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,13 +14,16 @@ import { UserDTO } from '../../models/auth/user-dto';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit , OnDestroy {
   keyword: string = '';
   username: string | null = null;
   isDropdownOpen: boolean = false;
   cartItemCount: number = 0;
   profilePictureUrl = environment.apiUrl + '/auth/uploads/' ;
   user! : UserDTO ;
+  isAdmin: boolean = false;
+  isAdminRoute: boolean = false;
+  private routerSubscription: Subscription | undefined;
 
   constructor(
     private sharedService: SharedService,
@@ -31,23 +35,43 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.loadCartItemCount();
     this.getUsername();
+    this.checkAdminRole();
+    this.setupRouterListener();
     this.cartService.getCartCount().subscribe((count) => {
       this.cartItemCount = count;  // Update the cart item count      
     });
     
   }
 
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
   getUsername(): void {
     this.authService.getUser().subscribe((user) => {
       if (user) {
         this.username = user.username;
         this.user = user;
-        
+        this.checkAdminRole();
       }
     });
   }
 
-  searchProducts(event: Event): void {
+  checkAdminRole(): void {
+    const roles = this.authService.getUserRolesFromToken();
+    this.isAdmin = roles.includes('ROLE_ADMIN');
+  }
+
+  setupRouterListener(): void {
+    this.routerSubscription = this.router.events.pipe(
+      filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.isAdminRoute = event.urlAfterRedirects.startsWith('/admin');
+    });
+  }
+
+  searchProducts(event: any): void {
     event.preventDefault();
     this.sharedService.setSearchKeyword(this.keyword);
   }

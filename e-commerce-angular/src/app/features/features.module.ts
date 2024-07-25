@@ -18,6 +18,12 @@ import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { NgxStripeModule } from 'ngx-stripe';
 import { SharedModule } from '../shared/shared.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProductManagementComponent } from './product-management/product-management.component';
+import { OrderManagementComponent } from './order-management/order-management.component';
+import { CustomerManagementComponent } from './customer-management/customer-management.component';
+import { AnalyticsManagementComponent } from './analytics-management/analytics-management.component';
+import { BaseChartDirective } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -33,6 +39,11 @@ import { SharedModule } from '../shared/shared.module';
     ProductDetailComponent,
     UserProfileEditComponent,
     OrderDetailComponent,
+    DashboardComponent,
+    ProductManagementComponent,
+    OrderManagementComponent,
+    CustomerManagementComponent,
+    AnalyticsManagementComponent,
   ],
   imports: [
     CommonModule,
@@ -40,7 +51,8 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     NgxStripeModule,
-    SharedModule
+    SharedModule,
+    BaseChartDirective,
   ],
 })
 export class FeaturesModule {}

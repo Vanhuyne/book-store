@@ -28,4 +28,8 @@ export class PaymentService {
       setup_future_usage: 'off_session'
     });
   }
+
+  getPaymentMethodsCount(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/payments/payment-methods`);
+  }
 }
