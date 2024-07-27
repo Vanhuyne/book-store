@@ -27,6 +27,7 @@ public class Payment {
     private String paymentMethod;
 
     private String paymentStatus;
+
     private Double amount;
 
     @Temporal(TemporalType.TIMESTAMP)

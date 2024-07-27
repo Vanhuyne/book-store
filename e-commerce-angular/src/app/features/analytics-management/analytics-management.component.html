@@ -1,20 +1,22 @@
 <div class="container mx-auto p-4">
-  <h2 class="text-2xl font-bold mb-4">Analysis Dashboard</h2>
-
-  <div class="mb-8">
-    <h3 class="text-xl font-semibold mb-2">Payment Methods Count</h3>
+  <div class="mb-8" style="width: 500px;">
+    <h3 class="text-xl font-semibold mb-2">Payment Methods Distribution</h3>
     <canvas baseChart
-            [data]="paymentMethodsChartData"
-            [labels]="paymentMethodsChartData.map(item => item.name)"
-            [chartType]="'pie'"></canvas>
+      [data]="paymentMethodsChartData"
+      [type]="paymentMethodsChartType"
+      [options]="paymentMethodsChartOptions">
+    </canvas>
   </div>
 
-  <div class="mb-8">
-    <h3 class="text-xl font-semibold mb-2">Monthly Orders</h3>
-    <canvas baseChart
-            [data]="monthlyOrdersChartData.map(item => item.value)"
-            [labels]="monthlyOrdersChartData.map(item => item.name)"
-            [chartType]="'bar'"></canvas>
+  <div class="mb-8 " style="width: 500px;">
+    <h3 class="text-xl font-semibold mb-2">Orders in Last 30 Days</h3>
+    <canvas baseChart class="chart"
+      [data]="lineChartData"
+      [options]="lineChartOptions"
+      [type]="lineChartType"
+      (chartHover)="chartHovered($event)"
+      (chartClick)="chartClicked($event)">
+    </canvas>
   </div>
 
   <div class="mb-8">

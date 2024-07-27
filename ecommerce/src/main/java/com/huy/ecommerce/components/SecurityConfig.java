@@ -34,7 +34,7 @@ public class SecurityConfig {
 
                                 .requestMatchers(HttpMethod.POST ,"/api/orders/place-order").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/orders/create-payment-intent").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/api/orders/**").hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers( "/api/orders/**").hasAnyAuthority("ROLE_ADMIN")
 
                                 .requestMatchers(HttpMethod.GET, "/api/payments/**").hasAnyAuthority("ROLE_ADMIN")
 

@@ -2,6 +2,7 @@ package com.huy.ecommerce.service;
 
 import com.huy.ecommerce.dtos.OrderDTO;
 import com.huy.ecommerce.dtos.OrderItemDTO;
+import com.huy.ecommerce.dtos.OrdersCountProjection;
 import com.huy.ecommerce.dtos.PaymentDTO;
 import com.huy.ecommerce.entities.*;
 import com.huy.ecommerce.exception.ResourceNotFoundException;
@@ -13,11 +14,13 @@ import com.huy.ecommerce.repository.OrderRepository;
 import com.huy.ecommerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +35,7 @@ public class OrderService {
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setOrderId(order.getOrderId());
         orderDTO.setUserId(order.getUser().getUserId());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setShippingName(order.getShippingName());
@@ -128,11 +132,81 @@ public class OrderService {
         return orderRepository.getTotalRevenue();
     }
 
-    public List<Long> getMonthlyOrders() {
-        List<Object[]> results = orderRepository.countOrdersPerMonth();
-        List<Long> monthlyOrders = results.stream()
-                .map(result -> ((Number) result[1]).longValue())
-                .collect(Collectors.toList());
-        return monthlyOrders;
+    public List<OrdersCountProjection> getOrdersCountForLast7Days() {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        return orderRepository.countOrdersGroupedByDayInLast7Days(sevenDaysAgo);
     }
+
+    // Get all orders
+    public Page<OrderDTO> getAllOrders(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return orderRepository.findAll(pageable).map(this::convertToDTO);
+
+    }
+
+
+    // Read order by ID
+    @Transactional
+    public OrderDTO getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+        return convertToDTO(order);
+    }
+
+    // Update order
+    @Transactional
+    public OrderDTO updateOrder(Long orderId , OrderDTO orderDTO){
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+
+        order.setStatus(orderDTO.getStatus());
+        order.setShippingName(orderDTO.getShippingName());
+        order.setShippingAddress(orderDTO.getShippingAddress());
+        order.setShippingCity(orderDTO.getShippingCity());
+        order.setShippingPostalCode(orderDTO.getShippingPostalCode());
+        order.setSubtotal(orderDTO.getSubtotal());
+        order.setTax(orderDTO.getTax());
+        order.setTotal(orderDTO.getTotal());
+        order.setUpdatedAt(LocalDateTime.now());
+
+        // Update payment details
+        Payment payment = order.getPayment();
+        PaymentDTO paymentDTO = orderDTO.getPayment();
+        payment.setPaymentMethod(paymentDTO.getPaymentMethod());
+        payment.setPaymentStatus(paymentDTO.getPaymentStatus());
+        payment.setAmount(paymentDTO.getAmount());
+        payment.setPaymentTime(new Date());
+        paymentRepository.save(payment);
+
+        // Update order items
+        orderItemRepository.deleteAll(order.getOrderItems());
+
+        List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(dto -> {
+            OrderItem item = new OrderItem();
+            item.setOrder(order);
+            item.setProductName(dto.getProductName());
+            item.setProductThumbnailUrl(dto.getProductThumbnailUrl());
+            item.setProductPrice(dto.getProductPrice());
+            item.setQuantity(dto.getQuantity());
+            return item;
+        }).collect(Collectors.toList());
+
+        orderItemRepository.saveAll(orderItems);
+        order.setOrderItems(orderItems);
+
+        orderRepository.save(order);
+
+        return convertToDTO(order);
+    }
+
+    // Delete order
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+
+        orderItemRepository.deleteAll(order.getOrderItems());
+        orderRepository.delete(order);
+    }
+
 }

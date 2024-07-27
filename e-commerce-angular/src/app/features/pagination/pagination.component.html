@@ -1,0 +1,33 @@
+<!-- pagination.component.html -->
+<nav class="flex justify-center my-4">
+    <ul class="inline-flex items-center -space-x-px">
+      <li>
+        <button
+          (click)="onPrevious()"
+          [disabled]="currentPage === 0"
+          class="px-3 py-1.5 border border-gray-300 rounded-l-lg bg-white text-gray-500 hover:bg-gray-100"
+        >
+          Previous
+        </button>
+      </li>
+      <li *ngFor="let page of pages; let i = index">
+        <button
+          (click)="onPageChange(i)"
+          [ngClass]="{'bg-blue-500 text-white': i === currentPage, 'bg-white text-gray-500': i !== currentPage}"
+          class="px-3 py-1.5 border border-gray-300"
+        >
+          {{ i + 1 }}
+        </button>
+      </li>
+      <li>
+        <button
+          (click)="onNext()"
+          [disabled]="currentPage >= totalPages - 1"
+          class="px-3 py-1.5 border border-gray-300 rounded-r-lg bg-white text-gray-500 hover:bg-gray-100"
+        >
+          Next
+        </button>
+      </li>
+    </ul>
+  </nav>
+  

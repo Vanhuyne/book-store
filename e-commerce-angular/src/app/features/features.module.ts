@@ -23,8 +23,11 @@ import { ProductManagementComponent } from './product-management/product-managem
 import { OrderManagementComponent } from './order-management/order-management.component';
 import { CustomerManagementComponent } from './customer-management/customer-management.component';
 import { AnalyticsManagementComponent } from './analytics-management/analytics-management.component';
-import { BaseChartDirective } from 'ng2-charts';
+import { BaseChartDirective  } from 'ng2-charts';
+import { Chart, registerables } from 'chart.js';
+import { PaginationComponent } from './pagination/pagination.component';
 
+Chart.register(...registerables);
 @NgModule({
   declarations: [
     LoginComponent,
@@ -44,6 +47,7 @@ import { BaseChartDirective } from 'ng2-charts';
     OrderManagementComponent,
     CustomerManagementComponent,
     AnalyticsManagementComponent,
+    PaginationComponent,
   ],
   imports: [
     CommonModule,
@@ -52,7 +56,7 @@ import { BaseChartDirective } from 'ng2-charts';
     ReactiveFormsModule,
     NgxStripeModule,
     SharedModule,
-    BaseChartDirective,
+    BaseChartDirective
   ],
 })
 export class FeaturesModule {}

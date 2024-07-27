@@ -46,7 +46,7 @@ const routes: Routes = [
       { path: 'products', component: ProductManagementComponent },
       { path: 'orders', component: OrderManagementComponent },
       { path: 'customers', component: CustomerManagementComponent },
-      { path: 'analytics', component: AnalyticsManagementComponent }
+      // { path: 'analytics', component: AnalyticsManagementComponent }
     ]
    }
 ];

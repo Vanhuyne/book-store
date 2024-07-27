@@ -2,6 +2,7 @@ import { OrderItem } from "./order-item";
 import { Payment } from "./payment";
 
 export interface Order {
+    orderId?: number;
     userId?: number;
     orderItems: OrderItem[];
     shippingName: string;
