@@ -1,1 +1,35 @@
-<p>product-management works!</p>
+<div class="container mx-auto p-4">
+    
+    <!-- Product Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border-1">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Price</th>
+            <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white ">
+          <tr *ngFor="let product of products" class="hover:bg-gray-100">
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ product.productId }}</td>
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ product.name }}</td>
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ product.categoryId }}</td>
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">${{ product.price | number:'1.2-2' }}</td>
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ product.stockQuantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Pagination -->
+    
+        <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    
+  </div>

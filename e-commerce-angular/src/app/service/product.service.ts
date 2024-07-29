@@ -63,8 +63,20 @@ export class ProductService {
     return request;
   }
 
+  createProduct(product: Product , file: File): Observable<String> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('product', JSON.stringify(product));
+    
+    return this.http.post<String>(`${this.apiUrl}/create`, formData);
+  }
 
+  updateProduct(productId: number, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${productId}`, product);
+  }
 
-
+  deleteProduct(productId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productId}`);
+  }
 
 }

@@ -15,7 +15,6 @@ import lombok.Setter;
 @Setter
 public class UserRegistrationDTO {
     @NotBlank(message = "Username is mandatory")
-    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
 
     @NotBlank(message = "Password is mandatory")

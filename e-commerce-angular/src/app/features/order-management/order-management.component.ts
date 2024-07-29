@@ -13,7 +13,7 @@ import { environment } from '../../../environments/environment';
 })
 export class OrderManagementComponent {
 
-  orders : Order[] = [];
+  orders: Order[] = [];
   totalPages: number = 0;
   currentPage: number = 0;
   pageSize: number = 5;
@@ -25,6 +25,8 @@ export class OrderManagementComponent {
   selectedPayment: Payment | null = null;
   editingOrder: Order | null = null;
   editOrderForm!: FormGroup;
+
+  statusOptions: string[] = ['Pending', 'Processing', 'Completed'];
 
   constructor(
     private orderService: OrderService,
@@ -78,7 +80,7 @@ export class OrderManagementComponent {
     this.selectedPayment = null;
   }
 
-  deleteOrder(order : Order) {
+  deleteOrder(order: Order) {
     if (order.orderId !== undefined) {
       this.orderService.deleteOrder(order.orderId).subscribe({
         next: (response) => {
@@ -91,30 +93,30 @@ export class OrderManagementComponent {
     }
   }
 
-    editOrder(order: Order) {
-      this.editingOrder = { ...order };
-      this.editOrderForm.patchValue({
-        shippingName: this.editingOrder.shippingName,
-        status: this.editingOrder.status,
-        total: this.editingOrder.total
+  editOrder(order: Order) {
+    this.editingOrder = { ...order };
+    this.editOrderForm.patchValue({
+      shippingName: this.editingOrder.shippingName,
+      status: this.editingOrder.status,
+      total: this.editingOrder.total
+    });
+  }
+  closeEditOrderModal() {
+    this.editingOrder = null;
+    this.editOrderForm.reset();
+  }
+  saveOrderChanges() {
+    if (this.editOrderForm.valid && this.editingOrder) {
+      const updatedOrder = { ...this.editingOrder, ...this.editOrderForm.value };
+      this.orderService.updateOrder(updatedOrder).subscribe({
+        next: (response) => {
+          this.loadOrders(this.currentPage, this.pageSize); // Reload orders
+          this.closeEditOrderModal(); // Close modal
+        },
+        error: (err) => {
+          this.error = err.message;
+        }
       });
     }
-    closeEditOrderModal() {
-      this.editingOrder = null;
-      this.editOrderForm.reset();
-    }
-    saveOrderChanges() {
-      if (this.editOrderForm.valid && this.editingOrder) {
-        const updatedOrder = { ...this.editingOrder, ...this.editOrderForm.value };
-        this.orderService.updateOrder(updatedOrder).subscribe({
-          next: (response) => {
-            this.loadOrders(this.currentPage, this.pageSize); // Reload orders
-            this.closeEditOrderModal(); // Close modal
-          },
-          error: (err) => {
-            this.error = err.message;
-          }
-        });
-      }
-    }
+  }
 }

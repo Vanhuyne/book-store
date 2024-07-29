@@ -8,11 +8,14 @@ import { Router } from '@angular/router';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent  implements OnInit {
+  route : string = 'orders';
   constructor(private router: Router) {}
 
   ngOnInit(): void {}
 
   navigateTo(route: string): void {
+
+    this.route = route;
     this.router.navigate(['/admin', route]);
   }
 }

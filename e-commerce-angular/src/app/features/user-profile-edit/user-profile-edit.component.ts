@@ -60,6 +60,7 @@ export class UserProfileEditComponent implements OnInit {
   }
 
   onSubmit(): void {
+    debugger
     if (this.profileForm.valid && this.user) {
       this.isLoading = true;
       const updatedUser: UserDTO = { ...this.user, ...this.profileForm.value };
@@ -69,9 +70,10 @@ export class UserProfileEditComponent implements OnInit {
         this.authService.updateProfilePicture(this.selectedFile).subscribe(
           (response: string) => {
             updatedUser.profilePictureUrl = response;
+            this.authService.setUser(updatedUser);
             this.updateProfile(updatedUser);
             this.toastr.success('Profile updated successfully');
-            this.authService.setUser(updatedUser);
+
           },
           error => {
             this.isLoading = false;
@@ -80,7 +82,6 @@ export class UserProfileEditComponent implements OnInit {
         );
       } else {
         this.updateProfile(updatedUser);
-        this.toastr.success('Profile updated successfully');
       }
     }
   }
@@ -90,6 +91,7 @@ export class UserProfileEditComponent implements OnInit {
       (response: UserDTO) => {
         this.authService.setUser(response);
         this.isLoading = false;
+        this.toastr.success('Profile updated successfully');
       },
       error => {
         this.toastr.error('Error updating profile');
@@ -97,6 +99,5 @@ export class UserProfileEditComponent implements OnInit {
       }
     );
   }
-
   get f() { return this.profileForm.controls; }
 }

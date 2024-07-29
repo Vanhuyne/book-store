@@ -89,4 +89,13 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @Valid ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.updateProduct(productId, productDTO));
+    }
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

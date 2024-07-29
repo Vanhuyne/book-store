@@ -29,7 +29,6 @@ public class User implements UserDetails {
     private Long userId;
 
     @NotBlank
-    @Size(min = 3, max = 50)
     @Column(unique = true, nullable = false)
     private String username;
 

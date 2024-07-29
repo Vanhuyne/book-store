@@ -42,7 +42,7 @@ const routes: Routes = [
     canActivate: [roleGuard],
     data: { roles: ['ROLE_ADMIN']  },
     children: [
-      { path : '' , redirectTo : 'products', pathMatch : 'full'},
+      { path : '' , redirectTo : 'orders', pathMatch : 'full'},
       { path: 'products', component: ProductManagementComponent },
       { path: 'orders', component: OrderManagementComponent },
       { path: 'customers', component: CustomerManagementComponent },

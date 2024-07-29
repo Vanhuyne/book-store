@@ -142,23 +142,28 @@ public class ProductService {
 
     // update product
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Optional<Product> existingProduct = productRepository.findById(id);
-        if (existingProduct.isPresent()) {
-            Product product = existingProduct.get();
-            product.setName(productDTO.getName());
-            product.setDescription(productDTO.getDescription());
-            product.setPrice(productDTO.getPrice());
-            product.setStockQuantity(productDTO.getStockQuantity());
-            product.setThumbnailUrl(productDTO.getThumbnailUrl());
-            product.setCategory(categoryRepository.findById(productDTO.getCategoryId()).orElse(null));
-            product.setUpdatedAt(LocalDateTime.now());
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
-            productRepository.save(product);
-            return convertToDTO(product);
-        }else {
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setStockQuantity(productDTO.getStockQuantity());
+        product.setThumbnailUrl(productDTO.getThumbnailUrl());
+        product.setCategory(categoryRepository.findById(productDTO.getCategoryId()).orElse(null));
+        product.setUpdatedAt(LocalDateTime.now());
+
+        Product updatedProduct = productRepository.save(product);
+        return convertToDTO(updatedProduct);
+
+    }
+
+    // DELETE
+    public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
             throw new ResourceNotFoundException("Product not found with id: " + id);
         }
-
+        productRepository.deleteById(id);
     }
 
     //get product by productId
@@ -189,37 +194,6 @@ public class ProductService {
                 .orElse(0.0);
     }
 
-//    public ProductDTO updateProduct(Long id , ProductDTO productDTO, MultipartFile file) throws IOException {
-//        Product product = productRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-//
-//        updateProductFields(product, productDTO);
-//
-//        if (file != null && !file.isEmpty()) {
-//            String newThumbnailUrl = uploadProductImage(file);
-//            product.setThumbnailUrl(newThumbnailUrl);
-//        }
-//
-//        product.setUpdatedAt(LocalDateTime.now());
-//        Product updatedProduct = productRepository.save(product);
-//        return convertToDTO(updatedProduct);
-//    }
 
-    private void updateProductFields(Product product, ProductDTO productDTO) {
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
-        product.setStockQuantity(productDTO.getStockQuantity());
-        product.setCategory(categoryRepository.findById(productDTO.getCategoryId()).orElse(null));
-    }
 
-//    public List<ProductDTO> getTopSellingProducts(int limit) {
-//        List<Product> topProducts = productRepository.findTopSellingProducts(limit);
-//        return topProducts.stream().map(this::convertToDTO).collect(Collectors.toList());
-//    }
-//
-//    public List<ProductDTO> getLowStockProducts(int threshold) {
-//        List<Product> lowStockProducts = productRepository.findByStockQuantityLessThan(threshold);
-//        return lowStockProducts.stream().map(this::convertToDTO).collect(Collectors.toList());
-//    }
 }
