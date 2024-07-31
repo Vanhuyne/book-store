@@ -6,7 +6,7 @@ services:
     restart: always
     container_name: ecommerce-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 1999
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: ecommerce_db
       MYSQL_USER: username
       MYSQL_PASSWORD: password
@@ -27,14 +27,14 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 1999
+      SPRING_DATASOURCE_URL: url-db
+      SPRING_DATASOURCE_USERNAME: username
+      SPRING_DATASOURCE_PASSWORD: password
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: thanvanhuyy@gmail.com
-      SPRING_MAIL_PASSWORD: rryb aowm rpqi vpmf
-      STRIPE_SECRET_KEY: sk_test_51Pf0vfGcaw8n2DuFCCGXlzvLWSjOD5jQv8DUM2lXEAwfPutffCPZxW4Ouqq1x9YTHi3v1M6eiAB3qrlNYoqPLuUe00rprCtRkr
+      SPRING_MAIL_USERNAME: email@gmail.com
+      SPRING_MAIL_PASSWORD: password-email-app
+      STRIPE_SECRET_KEY: secret-key
     networks:
       - ecommerce-network
 
