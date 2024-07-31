@@ -13,6 +13,7 @@ import com.huy.ecommerce.repository.PhotoRepository;
 import com.huy.ecommerce.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,6 +38,9 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final PhotoRepository photoRepository;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     private PhotoDTO convertToPhotoDTO(Photo photo) {
         PhotoDTO photoDTO = new PhotoDTO();

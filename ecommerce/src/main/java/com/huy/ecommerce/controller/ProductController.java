@@ -3,8 +3,10 @@ package com.huy.ecommerce.controller;
 import com.huy.ecommerce.dtos.ProductDTO;
 import com.huy.ecommerce.dtos.ProductFilterDTO;
 import com.huy.ecommerce.service.ProductService;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,7 +27,11 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private static final Path UPLOAD_DIR = Paths.get("./uploads").toAbsolutePath().normalize();
+//    private static final Path UPLOAD_DIR = Paths.get("./uploads").toAbsolutePath().normalize();
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
 
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> getAllProducts(
@@ -60,7 +67,7 @@ public class ProductController {
     @GetMapping("/uploads/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
-            Path filePath = UPLOAD_DIR.resolve(filename).normalize();
+            Path filePath = getUploadPath().resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
@@ -98,4 +105,19 @@ public class ProductController {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
+
+    // Replace UPLOAD_DIR with:
+    private Path getUploadPath() {
+        return Paths.get(uploadDir).toAbsolutePath().normalize();
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            Files.createDirectories(Paths.get(uploadDir));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create upload directory!");
+        }
+    }
+
 }

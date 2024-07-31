@@ -56,7 +56,7 @@ public class BeanConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of( "https://bookstore-frontend-mu.vercel.app/","http://localhost:4200"));
+        configuration.setAllowedOrigins(List.of( "https://bookstore-frontend-hfwyke3jx-vanhuys-projects.vercel.app","http://localhost:4200"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
