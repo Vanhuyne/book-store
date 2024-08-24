@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, from, map, Observable, switchMap, tap } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, catchError, from, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { UserRegistrationDTO } from '../models/auth/user-registration-dto';
 import { AuthRequest } from '../models/auth/auth-request';
 import { AuthResponse } from '../models/auth/auth-response';
@@ -16,6 +16,7 @@ import firebase from 'firebase/compat/app';
 export class AuthService {
   private baseUrl = environment.apiUrl + '/auth';
   private readonly tokenKey = 'authToken';
+  private readonly REFRESH_TOKEN_URL = environment.apiUrl + '/refresh-token';
 
   private jwtHelper = new JwtHelperService();
   private userSubject = new BehaviorSubject<UserDTO | null>(null);
@@ -149,5 +150,24 @@ export class AuthService {
       return decodedToken && decodedToken.roles ? decodedToken.roles : [];
     }
     return [];
+  }
+
+  refreshToken(): Observable<any> {
+    const token = this.getToken();
+    return this.http.post<any>(this.REFRESH_TOKEN_URL, { token })
+      .pipe(
+        tap(response => {
+          this.setToken(response.token);
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 401) {
+      // Handle unauthorized errors here
+      this.logout();
+    }
+    return throwError(error);
   }
 }

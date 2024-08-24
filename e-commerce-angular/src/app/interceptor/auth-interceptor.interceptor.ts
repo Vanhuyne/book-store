@@ -4,14 +4,15 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpHeaders
+  HttpHeaders,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../service/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   intercept(
     request: HttpRequest<unknown>,
@@ -19,8 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     // Add JWT token to the request header
     const token = this.authService.getToken();
-    
-    
+
     if (token) {
       request = request.clone({
         setHeaders: {
@@ -28,6 +28,28 @@ export class AuthInterceptor implements HttpInterceptor {
         },
       });
     }
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 && token) {
+          return this.authService.refreshToken().pipe(
+            switchMap((response: any) => {
+              request = request.clone({
+                setHeaders: {
+                  Authorization: `Bearer ${response.token}`,
+                },
+              });
+              return next.handle(request);
+            }),
+            catchError((err) => {
+              this.authService.logout();
+              return throwError(err);
+            })
+          );
+        } else {
+          return throwError(error);
+        }
+      })
+    );
+
   }
 }

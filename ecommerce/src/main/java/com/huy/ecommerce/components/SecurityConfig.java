@@ -21,6 +21,9 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
 
+    private final String[] freeResourceUrls = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+            "/swagger-resources/**", "/api-docs/**"};
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.cors(Customizer.withDefaults())
@@ -32,6 +35,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                                 .requestMatchers(  "/api/ratings/**").permitAll()
+                                .requestMatchers(freeResourceUrls).permitAll()
 
                                 .requestMatchers(HttpMethod.POST ,"/api/orders/place-order").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/orders/create-payment-intent").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
@@ -52,5 +56,7 @@ public class SecurityConfig {
                 .addFilterBefore( jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+
 
 }

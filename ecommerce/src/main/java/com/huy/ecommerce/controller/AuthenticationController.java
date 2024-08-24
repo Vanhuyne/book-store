@@ -1,6 +1,7 @@
 package com.huy.ecommerce.controller;
 
 import com.google.gson.Gson;
+import com.huy.ecommerce.components.JwtService;
 import com.huy.ecommerce.dtos.*;
 import com.huy.ecommerce.service.AuthenticationService;
 import com.huy.ecommerce.service.UserService;
@@ -33,7 +34,7 @@ import java.util.Map;
 public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
-    private static final Path UPLOAD_DIR = Paths.get("./uploads/users").toAbsolutePath().normalize();
+    private final JwtService jwtTokenProvider;
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(AuthenticationController.class);
 
@@ -70,6 +71,12 @@ public class AuthenticationController {
         return ResponseEntity.ok("Password reset email sent");
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody String token) {
+        String newToken = jwtTokenProvider.refreshToken(token);
+        return ResponseEntity.ok(new AuthResponse(newToken));
+    }
+
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody Map<String, String> request) {
         String newPassword = request.get("newPassword");
@@ -94,24 +101,6 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/uploads/{filename:.+}")
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        try {
-            Path filePath = UPLOAD_DIR.resolve(filename).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists()) {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
         }
     }
 
