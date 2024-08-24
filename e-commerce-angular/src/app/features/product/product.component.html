@@ -1,5 +1,5 @@
 <div [routerLink]="['/product', product.productId]" class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transform transition-all duration-300 hover:scale-105 cursor-auto " *ngIf="product">
-  <img [src]="apiThumnailUrl + product.thumbnailUrl" [alt]="product.name" class="w-full h-64 object-cover">
+  <img [src]="product.thumbnailUrl" [alt]="product.name" class="w-full h-64 object-cover">
   <div class="p-4">
     <h2 class="font-bold text-xl mb-2 h-14 overflow-hidden">{{ product.name }}</h2>
     <div class="flex justify-between items-center mb-4">

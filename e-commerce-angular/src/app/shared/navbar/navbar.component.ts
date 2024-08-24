@@ -19,7 +19,6 @@ export class NavbarComponent implements OnInit , OnDestroy {
   username: string | null = null;
   isDropdownOpen: boolean = false;
   cartItemCount: number = 0;
-  profilePictureUrl = environment.apiUrl + '/auth/uploads/' ;
   user! : UserDTO ;
   isAdmin: boolean = false;
   isAdminRoute: boolean = false;

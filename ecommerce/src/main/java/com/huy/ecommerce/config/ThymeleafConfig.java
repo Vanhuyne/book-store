@@ -1,4 +1,4 @@
-package com.huy.ecommerce;
+package com.huy.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

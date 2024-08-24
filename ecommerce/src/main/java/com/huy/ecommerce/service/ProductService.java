@@ -19,16 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -38,6 +35,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final PhotoRepository photoRepository;
+    private final FirebaseStorageService firebaseStorageService;
+
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -103,30 +102,20 @@ public class ProductService {
 
     // create product
     public void createProduct(ProductDTO productDTO , MultipartFile file) throws IOException{
-        try {
-            // Handle file
-            String uploadDir = "./uploads/";
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            // Generate random file name
-            String originalFilename = file.getOriginalFilename();
+        String folderPath = "images/products";
+        String fileUrl = firebaseStorageService.uploadFile(file, folderPath);
 
-            if (originalFilename == null) {
-                throw new IllegalArgumentException("Original filename cannot be null");
-            }
-            String originalFileName = StringUtils.cleanPath(originalFilename);
+        if (fileUrl == null) {
+            throw new IOException("Failed to upload image.");
+        }
 
-            String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            String randomFileName = UUID.randomUUID().toString() + extension;
-            Path filePath = uploadPath.resolve(randomFileName);
-            Files.copy(file.getInputStream(), filePath);
+        String bucketName = firebaseStorageService.getBucketName();
+        String encodedFileUrl = URLEncoder.encode(fileUrl, StandardCharsets.UTF_8.toString());
+        String fullUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media",
+                bucketName, encodedFileUrl);
+        productDTO.setThumbnailUrl(fullUrl);
 
-            // Set the thumbnailUrl in the productDTO (relative path)
-            productDTO.setThumbnailUrl(randomFileName);
 
-            // Create Product entity and save to database
             Product product = new Product();
             product.setName(productDTO.getName());
             product.setDescription(productDTO.getDescription());
@@ -138,9 +127,6 @@ public class ProductService {
             product.setUpdatedAt(LocalDateTime.now());
 
             productRepository.save(product);
-        } catch (IOException e) {
-            throw new ResourceNotFoundException("Failed to upload file: " + e.getMessage());
-        }
     }
 
     // update product

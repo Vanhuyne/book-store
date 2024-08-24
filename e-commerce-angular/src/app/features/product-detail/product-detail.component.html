@@ -17,7 +17,7 @@
               clip-rule="evenodd" />
           </svg>
         </button>
-        <img [src]="apiThumbnailUrl + mainImage" alt="{{ product.name }}"
+        <img [src]="mainImage" alt="{{ product.name }}"
           class="w-2/3 h-auto object-cover border border-gray-300 mx-4" aria-label="Main Image">
         <button class="bg-gray-200 rounded-full shadow-md" (click)="nextThumbnail()" aria-label="Next Thumbnail">
           <svg class="w-8 h-8 text-gray-600" viewBox="0 0 20 20" fill="currentColor">

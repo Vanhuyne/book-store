@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Product } from '../../models/product';
-import { environment } from '../../../environments/environment';
 import { RatingService } from '../../service/rating.service';
 
 @Component({
@@ -9,7 +8,6 @@ import { RatingService } from '../../service/rating.service';
   styleUrl: './product.component.css'
 })
 export class ProductComponent implements OnInit {
-  apiThumnailUrl = environment.apiUrl + '/products/uploads/';
   @Input() product!: Product ;
   @Output() addToCartClicked: EventEmitter<number> = new EventEmitter<number>();
 

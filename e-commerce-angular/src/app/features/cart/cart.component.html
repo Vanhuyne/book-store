@@ -22,7 +22,7 @@
 
       <div class="flex items-center border-b py-4 space-x-4" *ngFor="let item of cart.cartItems">
         <div class="w-20 h-20 bg-gray-200 rounded-md">
-          <img [src]="apiThumnailUrl + item.productThumbnailUrl" alt="{{ item.productName }}"
+          <img [src]="item.productThumbnailUrl" alt="{{ item.productName }}"
           class="w-20 h-20 object-cover">
         </div>
        

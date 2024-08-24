@@ -1,0 +1,2 @@
+ecommerce/src/main/resources/apiKeyFirebase.json
+ecommerce/src/main/resources/application-dev.properties

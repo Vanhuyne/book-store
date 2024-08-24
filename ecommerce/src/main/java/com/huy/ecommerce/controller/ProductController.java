@@ -2,8 +2,8 @@ package com.huy.ecommerce.controller;
 
 import com.huy.ecommerce.dtos.ProductDTO;
 import com.huy.ecommerce.dtos.ProductFilterDTO;
+import com.huy.ecommerce.service.FirebaseStorageService;
 import com.huy.ecommerce.service.ProductService;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -27,6 +25,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final FirebaseStorageService firebaseStorageService;
 //    private static final Path UPLOAD_DIR = Paths.get("./uploads").toAbsolutePath().normalize();
 
     @Value("${file.upload-dir}")
@@ -46,6 +45,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
+/*
     @PostMapping("/create")
     public ResponseEntity<String> createProduct(@Valid ProductDTO productDTO,
                                                 BindingResult bindingResult,
@@ -59,6 +59,23 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.CREATED).body( "Product created successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create product: " + e.getMessage());
+        }
+    }
+*/
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createProduct(@Valid ProductDTO productDTO,
+                                                BindingResult bindingResult,
+                                                @RequestParam("file") MultipartFile file) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation errors in product data.");
+        }
+        try {
+           productService.createProduct(productDTO, file);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Product created successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create product: " + e.getMessage());
         }
@@ -100,6 +117,7 @@ public class ProductController {
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @Valid ProductDTO productDTO) {
         return ResponseEntity.ok(productService.updateProduct(productId, productDTO));
     }
+
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
@@ -109,15 +127,6 @@ public class ProductController {
     // Replace UPLOAD_DIR with:
     private Path getUploadPath() {
         return Paths.get(uploadDir).toAbsolutePath().normalize();
-    }
-
-    @PostConstruct
-    public void init() {
-        try {
-            Files.createDirectories(Paths.get(uploadDir));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory!");
-        }
     }
 
 }

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +38,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
+    private final FirebaseStorageService firebaseStorageService;
 
     public void register(UserRegistrationDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
@@ -101,23 +104,27 @@ public class UserService {
     }
 
     public String uploadProfilePicture(MultipartFile file, Long userId) throws IOException {
-        String uploadDir = "./uploads/users/";
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+        String folderPath = "images/users";
+        String fileUrl = firebaseStorageService.uploadFile(file, folderPath);
+
+        if (fileUrl == null) {
+            throw new IOException("Failed to upload image.");
         }
 
-        String randomFileName = generateRandomFileName(file.getOriginalFilename());
-        Path filePath = uploadPath.resolve(randomFileName);
-        Files.copy(file.getInputStream(), filePath);
+        String bucketName = firebaseStorageService.getBucketName();
+        String encodedFileUrl = URLEncoder.encode(fileUrl, StandardCharsets.UTF_8.toString());
+        String fullUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media",
+                bucketName, encodedFileUrl);
+
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-        user.setProfilePictureUrl(randomFileName);
+
+        user.setProfilePictureUrl(fullUrl);
 
         userRepository.save(user);
 
-        return randomFileName;
+        return fullUrl;
     }
 
     private String getCurrentUsername() {
@@ -203,10 +210,6 @@ public class UserService {
         List<User> recentUsers = userRepository.findTop10ByOrderByCreatedAtDesc();
         return recentUsers.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
-
-//    public long getTotalUserCount() {
-//        return userRepository.count();
-//    }
 
     public long getActiveUserCount() {
         return userRepository.countByStatus(Status.ACTIVE);
