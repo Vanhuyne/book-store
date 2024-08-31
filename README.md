@@ -25,6 +25,7 @@ A full-stack e-commerce solution built with Spring Boot, Angular, and MySQL.
 - 🛠️ Admin panel for product and order management
 - 🔑 Login with Google using Firebase
 - 💸 Payment processing with Stripe
+- 🖼️ Image storage and retrieval using Firestore
 
 ## 🛠️ Tech Stack
 
